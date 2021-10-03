@@ -1,5 +1,5 @@
 public class TaxiOnline {
-    public void showMenu(){
+    public void showMenu() {
         System.out.println("---------- welcome to taxi online ----------");
         System.out.println("1.Add a group of drivers" +
                 "\n2.Add a group of passengers" +
@@ -9,4 +9,5 @@ public class TaxiOnline {
                 "\n6.show a list of drivers" +
                 "\n7.show a list of passengers\n ------------------------------");
     }
+
 }
