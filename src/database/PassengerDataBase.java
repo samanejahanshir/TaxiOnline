@@ -27,4 +27,32 @@ public class PassengerDataBase extends DataBaseAccess{
         }
         return  null;
     }
+    public int save(Passenger passenger) throws SQLException {
+        if(getConnection()!=null){
+            Statement statement= getConnection().createStatement();
+            String sqlQuery=String.format("INSERT INTO passenger (first_name , last_name , national_code , gender , birth_date , attendance_status , balance , mobile_phone)"
+                    +"VALUES ('%s','%s','%s',%b,'%s',%b,%f,'%s')",passenger.getFirstName(),passenger.getLastName(),passenger.getNationalCode(),passenger.isGender(),passenger.getBirthDate(),passenger.isAttendanceStatus(),passenger.getBalance(),passenger.getPhoneNumber());
+            int i=statement.executeUpdate(sqlQuery);
+            if(i!=0){
+                return i;
+            }else {
+                return 0;
+            }
+        }
+        return 0;
+    }
+    public int searchPassenger(String national_code) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery= String.format("SELECT national_code from passenger WHERE national_code='%s'",national_code);
+            ResultSet resultSet=statement.executeQuery(sqlQuery);
+            if(resultSet.next()){
+                return  resultSet.getInt(1);
+            }else {
+                return -1;
+            }
+        }else {
+            return  -1;
+        }
+    }
 }

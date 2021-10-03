@@ -130,13 +130,54 @@ public class TaxiOnline {
                 e.getStackTrace();
                 return  false;
             }
-            return false;        //TODO
+            return false;
 
         }
 
         public boolean addPassengers () {
-            //TODO
-            return true;        //TODO
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("enter user name : ");
+            String nationalCode = scanner.next();
+            try {
+                if (passengerDataBase.searchPassenger(Long.parseLong(nationalCode) + "") != -1) {
+                    System.out.println("this driver with this user name was exist ! ");
+                } else {
+                    System.out.println("first name :");
+                    String firstName = scanner.next();
+                    System.out.println("last name :");
+                    String lastName = scanner.next();
+                    System.out.println("mobile number :");
+                    String mobile = scanner.next();
+                    System.out.println("gender 0 for man and 1 for woman :");
+                    int gender = scanner.nextInt();
+                    boolean man=false;
+                    if (gender==1){
+                        man=true;
+                    }else if(gender!=1 && gender !=0){
+                        System.out.println("enter number 0 or 1 !! ");
+                        return false;
+                    }
+                    System.out.println("birth date");
+                    System.out.println("year :");
+                    String year = scanner.next();
+                    System.out.println("month :");
+                    String month = scanner.next();
+                    System.out.println("day :");
+                    String day = scanner.next();
+                    MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
+                    if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
+
+                        Passenger passenger = new Passenger(firstName, lastName, nationalCode,man,myDate.toString(),Long.parseLong(mobile)+"",0,false);
+                        passengerDataBase.save(passenger);
+                        return true;
+                    }
+                }
+            } catch(NumberFormatException | SQLException e){
+                System.out.println("enter number please ! ");
+                e.getStackTrace();
+                return  false;
+            }
+            return false;
 
 
         }

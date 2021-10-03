@@ -9,4 +9,12 @@ public class Passenger extends  Person{
         super(firstName, lastName, nationalCode, gender, birthDate, phoneNumber, balance);
         this.attendanceStatus = attendanceStatus;
     }
+
+    public boolean isAttendanceStatus() {
+        return attendanceStatus;
+    }
+
+    public void setAttendanceStatus(boolean attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
+    }
 }
