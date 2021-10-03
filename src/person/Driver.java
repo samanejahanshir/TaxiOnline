@@ -9,4 +9,12 @@ public class Driver extends Person{
         super(firstName, lastName, nationalCode, gender, birthDate, phoneNumber, balance);
         this.carTag = carTag;
     }
+
+    public String getCarTag() {
+        return carTag;
+    }
+
+    public void setCarTag(String carTag) {
+        this.carTag = carTag;
+    }
 }
