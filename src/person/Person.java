@@ -1,17 +1,15 @@
 package person;
 
-import java.util.Date;
-
 public class Person {
     private String firstName;
     private  String lastName;
     private String nationalCode;
     private boolean gender;
-    private Date birthDate;
+    private String birthDate;
     private String phoneNumber;
     private  double balance;
 
-    public Person(String firstName, String lastName, String nationalCode, boolean gender, Date birthDate, String phoneNumber, double balance) {
+    public Person(String firstName, String lastName, String nationalCode, boolean gender, String birthDate, String phoneNumber, double balance) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationalCode = nationalCode;
@@ -53,11 +51,11 @@ public class Person {
         this.gender = gender;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
