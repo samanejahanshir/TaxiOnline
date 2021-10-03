@@ -86,10 +86,15 @@ public class TaxiOnline {
     }
 
     public boolean addDrivers() {
+        boolean add=false;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("enter user name : ");
-        String nationalCode = scanner.next();
+        System.out.println("enter number of driver to add : ");
         try {
+        int numberOfDriver =scanner.nextInt();
+        for(int i=0; i<numberOfDriver;i++) {
+            System.out.println("enter user name : ");
+            String nationalCode = scanner.next();
+
             if (driverDataBase.searchDriver(Long.parseLong(nationalCode) + "") != -1) {
                 System.out.println("this driver with this user name was exist ! ");
             } else {
@@ -101,10 +106,10 @@ public class TaxiOnline {
                 String mobile = scanner.next();
                 System.out.println("gender 0 for man and 1 for woman :");
                 int gender = scanner.nextInt();
-                boolean man=false;
-                if (gender==1){
-                    man=true;
-                }else if(gender!=1 && gender !=0){
+                boolean man = false;
+                if (gender == 1) {
+                    man = true;
+                } else if (gender != 1 && gender != 0) {
                     System.out.println("enter number 0 or 1 !! ");
                     return false;
                 }
@@ -120,56 +125,69 @@ public class TaxiOnline {
                 MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
                 if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
 
-                    Driver driver = new Driver(firstName, lastName, nationalCode,man,myDate.toString(),Long.parseLong(mobile)+"",0,carTag);
-                    driverDataBase.save(driver);
-                    return true;
+                    Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag);
+                    if (driverDataBase.save(driver)!=0) {
+                        add = true;
+                    }else {
+                        add=false;
+                    }
                 }
             }
+        }
             } catch(NumberFormatException | SQLException e){
                 System.out.println("enter number please ! ");
                 e.getStackTrace();
                 return  false;
             }
-            return false;
+            return add;
 
         }
 
         public boolean addPassengers () {
+            boolean add=false;
             Scanner scanner = new Scanner(System.in);
-            System.out.println("enter user name : ");
-            String nationalCode = scanner.next();
+            System.out.println("enter number of driver to add : ");
             try {
-                if (passengerDataBase.searchPassenger(Long.parseLong(nationalCode) + "") != -1) {
-                    System.out.println("this driver with this user name was exist ! ");
-                } else {
-                    System.out.println("first name :");
-                    String firstName = scanner.next();
-                    System.out.println("last name :");
-                    String lastName = scanner.next();
-                    System.out.println("mobile number :");
-                    String mobile = scanner.next();
-                    System.out.println("gender 0 for man and 1 for woman :");
-                    int gender = scanner.nextInt();
-                    boolean man=false;
-                    if (gender==1){
-                        man=true;
-                    }else if(gender!=1 && gender !=0){
-                        System.out.println("enter number 0 or 1 !! ");
-                        return false;
-                    }
-                    System.out.println("birth date");
-                    System.out.println("year :");
-                    String year = scanner.next();
-                    System.out.println("month :");
-                    String month = scanner.next();
-                    System.out.println("day :");
-                    String day = scanner.next();
-                    MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
-                    if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
+                int numberOfDriver =scanner.nextInt();
+                for(int i=0; i<numberOfDriver;i++) {
+                    System.out.println("enter user name : ");
+                    String nationalCode = scanner.next();
+                    if (passengerDataBase.searchPassenger(Long.parseLong(nationalCode) + "") != -1) {
+                        System.out.println("this driver with this user name was exist ! ");
+                    } else {
+                        System.out.println("first name :");
+                        String firstName = scanner.next();
+                        System.out.println("last name :");
+                        String lastName = scanner.next();
+                        System.out.println("mobile number :");
+                        String mobile = scanner.next();
+                        System.out.println("gender 0 for man and 1 for woman :");
+                        int gender = scanner.nextInt();
+                        boolean man = false;
+                        if (gender == 1) {
+                            man = true;
+                        } else if (gender != 1 && gender != 0) {
+                            System.out.println("enter number 0 or 1 !! ");
+                            return false;
+                        }
+                        System.out.println("birth date");
+                        System.out.println("year :");
+                        String year = scanner.next();
+                        System.out.println("month :");
+                        String month = scanner.next();
+                        System.out.println("day :");
+                        String day = scanner.next();
+                        MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
+                        if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
 
-                        Passenger passenger = new Passenger(firstName, lastName, nationalCode,man,myDate.toString(),Long.parseLong(mobile)+"",0,false);
-                        passengerDataBase.save(passenger);
-                        return true;
+                            Passenger passenger = new Passenger(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, false);
+                            if(passengerDataBase.save(passenger)!=0){
+                                add=true;
+                            }
+                            else {
+                                add=false;
+                            }
+                        }
                     }
                 }
             } catch(NumberFormatException | SQLException e){
@@ -177,13 +195,13 @@ public class TaxiOnline {
                 e.getStackTrace();
                 return  false;
             }
-            return false;
+            return add;
 
 
         }
 
         public boolean driverSignUpOrLogIn () {
-            //TODO
+
             return true;        //TODO
 
 
