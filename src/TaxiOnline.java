@@ -136,11 +136,54 @@ public class TaxiOnline {
 
     }
 
-    public boolean driverSignUpOrLogIn() {
+    public int driverSignUpOrLogIn() {
+        System.out.println("enter user name :");
+        Scanner scanner = new Scanner(System.in);
+        String nationalCode = scanner.next();
+        try {
+            if (driverDataBase.searchDriver(nationalCode) != -1) {
+                while (true) {
+                    System.out.println("1.Increment balance\n2.exit");
+                    int selectItem = scanner.nextInt();
+                    switch (selectItem) {
+                        case 1:
+                            if (incrementBalance(nationalCode)) {
+                                System.out.println("Increment balance was successfully");
+                            } else {
+                                System.out.println("Increment balance was failed !");
 
-        return true;        //TODO
+                            }
 
+                        case 2:
+                            return 2;
+                        default:
+                            System.out.println("enter 1 or 2 ! ");
+                    }
+                }
 
+            } else {
+                while (true) {
+                    System.out.println("1.Register\n2.exit");
+                    int selectItem = scanner.nextInt();
+                    switch (selectItem) {
+                        case 1:
+                            if(registerDriver(nationalCode)){
+                                System.out.println("Register was successfully");
+                            }else {
+                                System.out.println("Register was failed !");
+                            }
+                            continue;
+                        case 2:
+                            return 2;
+                        default:
+                            System.out.println("enter 1 or 2 ! ");
+                    }
+                }
+            }
+        } catch (NumberFormatException | SQLException e) {
+            System.out.println("enter number please ! ");
+        }
+        return 0;
     }
 
     public boolean passengerSignUpOrLogIn() {
@@ -236,5 +279,22 @@ public class TaxiOnline {
             }
         }
         return false;
+    }
+    public boolean incrementBalance(String nationalCode){
+        Scanner scanner=new Scanner(System.in);
+        System.out.println("enter amount of increment balance :");
+        try {
+            double amount=scanner.nextDouble();
+            if(driverDataBase.IncrementBalance(nationalCode,amount+driverDataBase.showBalance(nationalCode))){
+                return  true;
+            }else {
+                return  false;
+            }
+
+
+        }catch (NumberFormatException | SQLException e){
+            System.out.println("enter number for amount !");
+        }
+        return  false;
     }
 }

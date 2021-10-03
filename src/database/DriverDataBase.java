@@ -28,30 +28,61 @@ public class DriverDataBase extends DataBaseAccess {
     public int searchDriver(String national_code) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            String sqlQuery= String.format("SELECT national_code from driver WHERE national_code='%s'",national_code);
-            ResultSet resultSet=statement.executeQuery(sqlQuery);
-            if(resultSet.next()){
-                return  resultSet.getInt(1);
-            }else {
+            String sqlQuery = String.format("SELECT id_driver from driver WHERE national_code='%s'", national_code);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
                 return -1;
             }
-        }else {
-            return  -1;
+        } else {
+            return -1;
         }
     }
+
     public List<Driver> showListDrivers() throws SQLException {
-        List<Driver> drivers=new ArrayList<>();
-        if (getConnection()!=null){
-            Statement statement=getConnection().createStatement();
-            String sqlQuery=String.format("SELECT * FROM driver");
-            ResultSet resultSet=statement.executeQuery(sqlQuery);
-            while (resultSet.next()){
-                Driver driver=new Driver(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4)
-                ,resultSet.getBoolean(6),resultSet.getString(7),resultSet.getString(5),resultSet.getDouble(9),resultSet.getString(8));
+        List<Driver> drivers = new ArrayList<>();
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("SELECT * FROM driver");
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next()) {
+                Driver driver = new Driver(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4)
+                        , resultSet.getBoolean(6), resultSet.getString(7), resultSet.getString(5), resultSet.getDouble(9), resultSet.getString(8));
                 drivers.add(driver);
             }
             return drivers;
         }
-        return  null;
+        return null;
+    }
+
+    public double showBalance(String nationalCode) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("SELECT balance from driver WHERE national_code='%s'", nationalCode);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
+
+    public boolean IncrementBalance(String national_code, double balance) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE driver SET balance=%2f WHERE national_code='%s'", balance, national_code);
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }
