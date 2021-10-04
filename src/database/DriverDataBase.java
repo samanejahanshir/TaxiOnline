@@ -71,18 +71,4 @@ public class DriverDataBase extends DataBaseAccess {
         }
     }
 
-    public boolean IncrementBalance(String national_code, double balance) throws SQLException {
-        if (getConnection() != null) {
-            Statement statement = getConnection().createStatement();
-            String sqlQuery = String.format("UPDATE driver SET balance=%2f WHERE national_code='%s'", balance, national_code);
-            int i = statement.executeUpdate(sqlQuery);
-            if (i != 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
 }

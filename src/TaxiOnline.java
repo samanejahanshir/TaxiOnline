@@ -141,17 +141,12 @@ public class TaxiOnline {
         try {
             if (driverDataBase.searchDriver(nationalCode) != -1) {
                 while (true) {
-                    System.out.println("1.Increment balance\n2.exit");
+                    System.out.println("1.show balance\n2.exit");
                     int selectItem = scanner.nextInt();
                     switch (selectItem) {
                         case 1:
-                            if (incrementBalanceDriver(nationalCode)) {
-                                System.out.println("Increment balance was successfully");
-                            } else {
-                                System.out.println("Increment balance was failed !");
 
-                            }
-
+                            System.out.println("balance : " + driverDataBase.showBalance(nationalCode));
                         case 2:
                             return 2;
                         default:
@@ -324,24 +319,6 @@ public class TaxiOnline {
             } else {
                 return false;
             }
-        }
-        return false;
-    }
-
-    public boolean incrementBalanceDriver(String nationalCode) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("enter amount of increment balance :");
-        try {
-            double amount = scanner.nextDouble();
-            if (driverDataBase.IncrementBalance(nationalCode, amount + driverDataBase.showBalance(nationalCode))) {
-                return true;
-            } else {
-                return false;
-            }
-
-
-        } catch (NumberFormatException | SQLException e) {
-            System.out.println("enter number for amount !");
         }
         return false;
     }
