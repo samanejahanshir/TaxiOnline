@@ -87,7 +87,7 @@ public class TaxiOnline {
         try {
             int numberOfDriver = scanner.nextInt();
             for (int i = 0; i < numberOfDriver; i++) {
-                System.out.println("enter user name "+(i+1)+" :");
+                System.out.println("enter user name " + (i + 1) + " :");
                 String nationalCode = scanner.next();
 
                 if (driverDataBase.searchDriver(Long.parseLong(nationalCode) + "") != -1) {
@@ -114,7 +114,7 @@ public class TaxiOnline {
         try {
             int numberOfDriver = scanner.nextInt();
             for (int i = 0; i < numberOfDriver; i++) {
-                System.out.println("enter user name "+(i+1)+" :");
+                System.out.println("enter user name " + (i + 1) + " :");
                 String nationalCode = scanner.next();
                 if (passengerDataBase.searchPassenger(Long.parseLong(nationalCode) + "") != -1) {
                     System.out.println("this driver with this user name was exist ! ");
@@ -237,15 +237,19 @@ public class TaxiOnline {
     }
 
     public void showListOfDrivers() throws SQLException {
-        drivers=driverDataBase.showListDrivers();
-        for(int i=0;i<drivers.size();i++){
+        drivers = driverDataBase.showListDrivers();
+        for (int i = 0; i < drivers.size(); i++) {
             System.out.println(drivers.get(i));
 
         }
     }
 
-    public void showListOfPassengers() {
-        //TODO
+    public void showListOfPassengers() throws SQLException {
+        passengers = passengerDataBase.showListPassengers();
+        for (int i = 0; i < passengers.size(); i++) {
+            System.out.println(passengers.get(i));
+
+        }
     }
 
     public boolean registerDriver(String nationalCode) throws SQLException {
