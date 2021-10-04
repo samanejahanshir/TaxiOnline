@@ -4,9 +4,7 @@ import person.Driver;
 import person.Passenger;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,10 +27,9 @@ public class TaxiOnline {
                     "\n2.Add a group of passengers" +
                     "\n3.Driver signup or login" +
                     "\n4.Passenger signup or login" +
-                    "\n5.show ongoing travels" +
-                    "\n6.show a list of drivers" +
-                    "\n7.show a list of passengers" +
-                    "\n8.exit\n ------------------------------");
+                    "\n5.show a list of drivers" +
+                    "\n6.show a list of passengers" +
+                    "\n7.exit\n ------------------------------");
             exit = selectMenuItem();
         }
     }
@@ -63,18 +60,16 @@ public class TaxiOnline {
                     passengerSignUpOrLogIn();
                     return false;
                 case 5:
-                    showOnGoingTravels();
-                    return false;
-                case 6:
                     showListOfDrivers();
                     return false;
-                case 7:
+                case 6:
                     showListOfPassengers();
                     return false;
-                case 8:
+                case 7:
                     return true;
+
                 default:
-                    System.out.println("enter number between 1 and 8 please !");
+                    System.out.println("enter number between 1 and 7 please !");
                     return false;
             }
 
@@ -92,7 +87,7 @@ public class TaxiOnline {
         try {
             int numberOfDriver = scanner.nextInt();
             for (int i = 0; i < numberOfDriver; i++) {
-                System.out.println("enter user name : ");
+                System.out.println("enter user name "+(i+1)+" :");
                 String nationalCode = scanner.next();
 
                 if (driverDataBase.searchDriver(Long.parseLong(nationalCode) + "") != -1) {
@@ -100,6 +95,7 @@ public class TaxiOnline {
                 } else {
                     add = registerDriver(nationalCode);
                 }
+                System.out.println("--------------------");
 
             }
         } catch (NumberFormatException | SQLException e) {
@@ -114,17 +110,19 @@ public class TaxiOnline {
     public boolean addPassengers() {
         boolean add = false;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("enter number of driver to add : ");
+        System.out.println("enter number of passenger to add : ");
         try {
             int numberOfDriver = scanner.nextInt();
             for (int i = 0; i < numberOfDriver; i++) {
-                System.out.println("enter user name : ");
+                System.out.println("enter user name "+(i+1)+" :");
                 String nationalCode = scanner.next();
                 if (passengerDataBase.searchPassenger(Long.parseLong(nationalCode) + "") != -1) {
                     System.out.println("this driver with this user name was exist ! ");
                 } else {
                     add = registerPassenger(nationalCode);
                 }
+                System.out.println("--------------------");
+
             }
         } catch (NumberFormatException | SQLException e) {
             System.out.println("enter number please ! ");
@@ -147,7 +145,7 @@ public class TaxiOnline {
                     int selectItem = scanner.nextInt();
                     switch (selectItem) {
                         case 1:
-                            if (incrementBalance(nationalCode)) {
+                            if (incrementBalanceDriver(nationalCode)) {
                                 System.out.println("Increment balance was successfully");
                             } else {
                                 System.out.println("Increment balance was failed !");
@@ -167,9 +165,9 @@ public class TaxiOnline {
                     int selectItem = scanner.nextInt();
                     switch (selectItem) {
                         case 1:
-                            if(registerDriver(nationalCode)){
+                            if (registerDriver(nationalCode)) {
                                 System.out.println("Register was successfully");
-                            }else {
+                            } else {
                                 System.out.println("Register was failed !");
                             }
                             continue;
@@ -186,15 +184,56 @@ public class TaxiOnline {
         return 0;
     }
 
-    public boolean passengerSignUpOrLogIn() {
-        //TODO
-        return true;        //TODO
+    public int passengerSignUpOrLogIn() {
+        System.out.println("enter user name :");
+        Scanner scanner = new Scanner(System.in);
+        String nationalCode = scanner.next();
+        try {
+            if (passengerDataBase.searchPassenger(nationalCode) != -1) {
+                while (true) {
+                    System.out.println("1.Increment balance\n2.exit");
+                    int selectItem = scanner.nextInt();
+                    switch (selectItem) {
+                        case 1:
+                            if (incrementBalancePassenger(nationalCode)) {
+                                System.out.println("Increment balance was successfully");
+                            } else {
+                                System.out.println("Increment balance was failed !");
+
+                            }
+
+                        case 2:
+                            return 2;
+                        default:
+                            System.out.println("enter 1 or 2 ! ");
+                    }
+                }
+
+            } else {
+                while (true) {
+                    System.out.println("1.Register\n2.exit");
+                    int selectItem = scanner.nextInt();
+                    switch (selectItem) {
+                        case 1:
+                            if (registerPassenger(nationalCode)) {
+                                System.out.println("Register was successfully");
+                            } else {
+                                System.out.println("Register was failed !");
+                            }
+                            continue;
+                        case 2:
+                            return 2;
+                        default:
+                            System.out.println("enter 1 or 2 ! ");
+                    }
+                }
+            }
+        } catch (NumberFormatException | SQLException e) {
+            System.out.println("enter number please ! ");
+        }
+        return 0;
 
 
-    }
-
-    public void showOnGoingTravels() {
-        //TODO
     }
 
     public void showListOfDrivers() {
@@ -280,21 +319,40 @@ public class TaxiOnline {
         }
         return false;
     }
-    public boolean incrementBalance(String nationalCode){
-        Scanner scanner=new Scanner(System.in);
+
+    public boolean incrementBalanceDriver(String nationalCode) {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("enter amount of increment balance :");
         try {
-            double amount=scanner.nextDouble();
-            if(driverDataBase.IncrementBalance(nationalCode,amount+driverDataBase.showBalance(nationalCode))){
-                return  true;
-            }else {
-                return  false;
+            double amount = scanner.nextDouble();
+            if (driverDataBase.IncrementBalance(nationalCode, amount + driverDataBase.showBalance(nationalCode))) {
+                return true;
+            } else {
+                return false;
             }
 
 
-        }catch (NumberFormatException | SQLException e){
+        } catch (NumberFormatException | SQLException e) {
             System.out.println("enter number for amount !");
         }
-        return  false;
+        return false;
+    }
+
+    public boolean incrementBalancePassenger(String nationalCode) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("enter amount of increment balance :");
+        try {
+            double amount = scanner.nextDouble();
+            if (passengerDataBase.IncrementBalance(nationalCode, amount + passengerDataBase.showBalance(nationalCode))) {
+                return true;
+            } else {
+                return false;
+            }
+
+
+        } catch (NumberFormatException | SQLException e) {
+            System.out.println("enter number for amount !");
+        }
+        return false;
     }
 }

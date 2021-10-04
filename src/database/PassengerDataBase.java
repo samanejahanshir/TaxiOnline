@@ -55,4 +55,32 @@ public class PassengerDataBase extends DataBaseAccess{
             return  -1;
         }
     }
+    public boolean IncrementBalance(String national_code, double balance) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE passenger SET balance=%2f WHERE national_code='%s'", balance, national_code);
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    public double showBalance(String nationalCode) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("SELECT balance from passenger WHERE national_code='%s'", nationalCode);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
 }
