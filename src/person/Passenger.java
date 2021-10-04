@@ -17,4 +17,24 @@ public class Passenger extends  Person{
     public void setAttendanceStatus(boolean attendanceStatus) {
         this.attendanceStatus = attendanceStatus;
     }
+
+    @Override
+    public String toString() {
+        String gender;
+        if(isGender()==true){
+            gender="female";
+        }else {
+            gender="male";
+        }
+        return "Person{" +
+                "firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", nationalCode='" + getNationalCode() + '\'' +
+                ", gender='" + gender +'\''+
+                ", birthDate='" + getBirthDate() + '\'' +
+                ", phoneNumber='" + getPhoneNumber() + '\'' +
+                ", balance=" + getBalance() +
+                ", attendanceStatus='" + attendanceStatus + '\'' +
+                '}';
+    }
 }
