@@ -17,4 +17,24 @@ public class Driver extends Person{
     public void setCarTag(String carTag) {
         this.carTag = carTag;
     }
+
+    @Override
+    public String toString() {
+        String gender;
+        if(isGender()==true){
+            gender="female";
+        }else {
+            gender="male";
+        }
+        return "Person{" +
+                "firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", nationalCode='" + getNationalCode() + '\'' +
+                ", gender='" + gender +'\''+
+                ", birthDate='" + getBirthDate() + '\'' +
+                ", phoneNumber='" + getPhoneNumber() + '\'' +
+                ", balance=" + getBalance() +
+                ", car_tag='" + carTag + '\'' +
+                '}';
+    }
 }

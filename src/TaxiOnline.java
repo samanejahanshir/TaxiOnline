@@ -73,7 +73,7 @@ public class TaxiOnline {
                     return false;
             }
 
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | SQLException e) {
             System.out.println("enter number please !");
             e.getStackTrace();
             return false;
@@ -236,8 +236,12 @@ public class TaxiOnline {
 
     }
 
-    public void showListOfDrivers() {
-        //TODO
+    public void showListOfDrivers() throws SQLException {
+        drivers=driverDataBase.showListDrivers();
+        for(int i=0;i<drivers.size();i++){
+            System.out.println(drivers.get(i));
+
+        }
     }
 
     public void showListOfPassengers() {
