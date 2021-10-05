@@ -1,6 +1,7 @@
 package person;
 
 public class Person {
+    private  int id;
     private String firstName;
     private  String lastName;
     private String nationalCode;
@@ -17,6 +18,14 @@ public class Person {
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
         this.balance = balance;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {

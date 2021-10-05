@@ -35,6 +35,11 @@ public class CheckValidation {
                     throw  new TagFormatException("7th character of tag should be - ");
                 }
             }
+            else if (i!=2 && i!=6){
+                if(!checkInt(inputString.charAt(i)+"")){
+                    throw new TagFormatException("tag format is not valid you should enter number");
+                }
+            }
         }
         return true;
     }
