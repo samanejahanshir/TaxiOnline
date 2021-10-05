@@ -1,5 +1,6 @@
+import exception.DateException;
 
-    public class MyDate {
+public class MyDate {
         enum Month {
             FARVARDIN, ORDIBEHESHT, KHORDAD, TIR, MORDAD, SHAHRIVAR,
             MEHR, ABAN, AZAR, DEY, BAHMAN, ESFAND;
@@ -87,7 +88,7 @@
                 } else if (month == 12 && day > 0 && day <= 29) {
                     return true;
                 } else {
-                    return false;
+                    throw new DateException("this format date is invalid");
                 }
             }
             return false;

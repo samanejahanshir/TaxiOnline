@@ -1,5 +1,6 @@
 import database.DriverDataBase;
 import database.PassengerDataBase;
+import exception.StringException;
 import other_class.Vehicle;
 import person.Driver;
 import person.Passenger;
@@ -100,8 +101,7 @@ public class TaxiOnline {
 
             }
         } catch (NumberFormatException | SQLException e) {
-            System.out.println("enter number please ! ");
-            e.getStackTrace();
+            e.getMessage();
             return false;
         }
         return add;
@@ -125,9 +125,8 @@ public class TaxiOnline {
                 System.out.println("--------------------");
 
             }
-        } catch (NumberFormatException | SQLException e) {
-            System.out.println("enter number please ! ");
-            e.getStackTrace();
+        } catch (NumberFormatException | SQLException  |StringException e) {
+            e.getMessage();
             return false;
         }
         return add;
@@ -269,8 +268,26 @@ public class TaxiOnline {
         String carTag = scanner.next();
         System.out.println("car color:");
         String color = scanner.next();
-        System.out.println("car type:");
+        System.out.println("car type: v => van  c => car  m => motorcycle  p => pickUp");
         String type = scanner.next();
+        switch (type) {
+            case "v":
+                type = VehicleType.VAN.getName();
+                break;
+            case "c":
+                type = VehicleType.CAR.getName();
+                break;
+            case "p":
+                type = VehicleType.PICKUP.getName();
+                break;
+            case "m":
+                type = VehicleType.MOTORCYCLE.getName();
+                break;
+
+            default:
+                System.out.println("invalid type of vehicle");
+
+        }
         System.out.println("car model :");
         String model = scanner.next();
         System.out.println("birth date");
@@ -282,9 +299,9 @@ public class TaxiOnline {
         String day = scanner.next();
         MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
         if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
-            Vehicle vehicle=new Vehicle(carTag,color,model,type);
+            Vehicle vehicle = new Vehicle(carTag, color, model, type);
             Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag);
-            if (driverDataBase.save(driver) != 0 ) {//TODO
+            if (driverDataBase.save(driver) != 0 && driverDataBase.saveVehicle(vehicle)!=0) {
                 return true;
             } else {
                 return false;
