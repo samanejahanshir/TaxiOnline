@@ -1,5 +1,6 @@
 import database.DriverDataBase;
 import database.PassengerDataBase;
+import other_class.Vehicle;
 import person.Driver;
 import person.Passenger;
 
@@ -266,6 +267,12 @@ public class TaxiOnline {
         }
         System.out.println("car tag :");
         String carTag = scanner.next();
+        System.out.println("car color:");
+        String color = scanner.next();
+        System.out.println("car type:");
+        String type = scanner.next();
+        System.out.println("car model :");
+        String model = scanner.next();
         System.out.println("birth date");
         System.out.println("year :");
         String year = scanner.next();
@@ -275,9 +282,9 @@ public class TaxiOnline {
         String day = scanner.next();
         MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
         if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
-
+            Vehicle vehicle=new Vehicle(carTag,color,model,type);
             Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag);
-            if (driverDataBase.save(driver) != 0) {
+            if (driverDataBase.save(driver) != 0 ) {//TODO
                 return true;
             } else {
                 return false;

@@ -1,5 +1,6 @@
 package database;
 
+import other_class.Vehicle;
 import person.Driver;
 
 import java.sql.ResultSet;
@@ -70,5 +71,15 @@ public class DriverDataBase extends DataBaseAccess {
             return -1;
         }
     }
-
+    public int saveVehicle(Vehicle vehicle) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("INSERT INTO vehicle (vehicle_tag , type , model , color) VALUES ('%s','%s','%s','%s')",
+                    vehicle.getVehicleTag(), vehicle.getType(), vehicle.getModel(), vehicle.getColor());
+            int i = statement.executeUpdate(sqlQuery);
+            return i;
+        } else {
+            return 0;
+        }
+    }
 }

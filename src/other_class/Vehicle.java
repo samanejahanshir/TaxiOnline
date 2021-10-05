@@ -1,24 +1,24 @@
 package other_class;
 
-public class Car {
-    private String carTag;
+public class Vehicle {
+    private String vehicleTag;
     private String color;
     private  String model;
     private  String Type;
 
-    public Car(String carTag, String color, String model, String type) {
-        this.carTag = carTag;
+    public Vehicle(String carTag, String color, String model, String type) {
+        this.vehicleTag = carTag;
         this.color = color;
         this.model = model;
         Type = type;
     }
 
-    public String getCarTag() {
-        return carTag;
+    public String getVehicleTag() {
+        return vehicleTag;
     }
 
-    public void setCarTag(String carTag) {
-        this.carTag = carTag;
+    public void setVehicleTag(String vehicleTag) {
+        this.vehicleTag = vehicleTag;
     }
 
     public String getColor() {
