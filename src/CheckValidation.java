@@ -1,10 +1,11 @@
+import exception.NumberException;
 import exception.StringException;
 
 public class CheckValidation {
     public static boolean checkInt(String number) {
         for (int i = 0; i < number.length(); i++) {
             if (!Character.isDigit(number.charAt(i))) {
-                throw  new NumberFormatException();
+                throw  new NumberException("this is not number");
             }
         }
         return true;

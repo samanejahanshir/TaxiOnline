@@ -1,5 +1,7 @@
 import database.DriverDataBase;
 import database.PassengerDataBase;
+import exception.DateException;
+import exception.NumberException;
 import exception.StringException;
 import other_class.Vehicle;
 import person.Driver;
@@ -7,6 +9,7 @@ import person.Passenger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -75,7 +78,7 @@ public class TaxiOnline {
                     return false;
             }
 
-        } catch (NumberFormatException | SQLException e) {
+        } catch (NumberFormatException | SQLException | InputMismatchException e) {
             System.out.println("enter number please !");
             e.getStackTrace();
             return false;
@@ -100,9 +103,9 @@ public class TaxiOnline {
                 System.out.println("--------------------");
 
             }
-        } catch (NumberFormatException | SQLException e) {
-            e.getMessage();
-            return false;
+        } catch (NumberFormatException | SQLException | StringException | NumberException | DateException | InputMismatchException e) {
+            System.out.println(e.getMessage()+" "+ e.getStackTrace());
+             return false;
         }
         return add;
 
@@ -125,8 +128,8 @@ public class TaxiOnline {
                 System.out.println("--------------------");
 
             }
-        } catch (NumberFormatException | SQLException  |StringException e) {
-            e.getMessage();
+        } catch (NumberFormatException | SQLException  |StringException |DateException | NumberException | InputMismatchException e) {
+            System.out.println(e.getMessage());
             return false;
         }
         return add;
@@ -173,8 +176,9 @@ public class TaxiOnline {
                     }
                 }
             }
-        } catch (NumberFormatException | SQLException e) {
-            System.out.println("enter number please ! ");
+        } catch (NumberFormatException | SQLException | InputMismatchException e) {
+            System.out.println(e.getMessage());
+
         }
         return 0;
     }
@@ -247,7 +251,7 @@ public class TaxiOnline {
         }
     }
 
-    public boolean registerDriver(String nationalCode) throws SQLException {
+    public boolean registerDriver(String nationalCode)  {
         Scanner scanner = new Scanner(System.in);
         System.out.println("first name :");
         String firstName = scanner.next();
@@ -298,14 +302,20 @@ public class TaxiOnline {
         System.out.println("day :");
         String day = scanner.next();
         MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
-        if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
-            Vehicle vehicle = new Vehicle(carTag, color, model, type);
-            Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag);
-            if (driverDataBase.save(driver) != 0 && driverDataBase.saveVehicle(vehicle)!=0) {
-                return true;
-            } else {
-                return false;
+        try {
+            if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
+                if (CheckValidation.checkString(firstName) && CheckValidation.checkString(lastName) && CheckValidation.checkInt(mobile)) {
+                    Vehicle vehicle = new Vehicle(carTag, color, model, type);
+                    Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag);
+                    if (driverDataBase.save(driver) != 0 && driverDataBase.saveVehicle(vehicle) != 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
             }
+        }catch (NumberException | StringException | DateException | SQLException | InputMismatchException e){
+            System.out.println(e.getMessage());
         }
         return false;
     }
@@ -335,14 +345,20 @@ public class TaxiOnline {
         System.out.println("day :");
         String day = scanner.next();
         MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
-        if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
+        try {
+            if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
+                if (CheckValidation.checkString(firstName) && CheckValidation.checkString(lastName) && CheckValidation.checkInt(mobile)) {
 
-            Passenger passenger = new Passenger(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, false);
-            if (passengerDataBase.save(passenger) != 0) {
-                return true;
-            } else {
-                return false;
+                    Passenger passenger = new Passenger(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, false);
+                    if (passengerDataBase.save(passenger) != 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
             }
+        }catch (SQLException | StringException | NumberException | DateException | InputMismatchException e){
+            System.out.println(e.getMessage());
         }
         return false;
     }
@@ -360,7 +376,8 @@ public class TaxiOnline {
 
 
         } catch (NumberFormatException | SQLException e) {
-            System.out.println("enter number for amount !");
+
+            System.out.println(e.getMessage());
         }
         return false;
     }
