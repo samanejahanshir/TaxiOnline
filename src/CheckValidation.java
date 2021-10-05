@@ -1,5 +1,6 @@
 import exception.NumberException;
 import exception.StringException;
+import exception.TagFormatException;
 
 public class CheckValidation {
     public static boolean checkInt(String number) {
@@ -19,4 +20,23 @@ public class CheckValidation {
         }
         return true;
     }
-}
+    public static boolean isValidateTagVehicle(String inputString) {
+        if(inputString.length()!=9){
+            throw new TagFormatException("==> length of tag is != 9 ");
+        }
+        for(int i=0;i<inputString.length();i++) {
+            if(i==2) {
+                if (!checkString(inputString.charAt(2) + "")) {
+                    throw new TagFormatException("third character of tag vehicle should be alphabet ");
+                }
+            }
+            if(i==6){
+                if(inputString.charAt(i)!='-'){
+                    throw  new TagFormatException("7th character of tag should be - ");
+                }
+            }
+        }
+        return true;
+    }
+
+    }

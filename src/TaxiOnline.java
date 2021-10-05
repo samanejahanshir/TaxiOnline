@@ -3,6 +3,7 @@ import database.PassengerDataBase;
 import exception.DateException;
 import exception.NumberException;
 import exception.StringException;
+import exception.TagFormatException;
 import other_class.Vehicle;
 import person.Driver;
 import person.Passenger;
@@ -304,7 +305,7 @@ public class TaxiOnline {
         MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
         try {
             if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
-                if (CheckValidation.checkString(firstName) && CheckValidation.checkString(lastName) && CheckValidation.checkInt(mobile)) {
+                if (CheckValidation.checkString(firstName) && CheckValidation.checkString(lastName) && CheckValidation.checkInt(mobile) && CheckValidation.isValidateTagVehicle(carTag)) {
                     Vehicle vehicle = new Vehicle(carTag, color, model, type);
                     Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag);
                     if (driverDataBase.save(driver) != 0 && driverDataBase.saveVehicle(vehicle) != 0) {
@@ -314,7 +315,7 @@ public class TaxiOnline {
                     }
                 }
             }
-        }catch (NumberException | StringException | DateException | SQLException | InputMismatchException e){
+        }catch (NumberException | StringException | DateException | SQLException | InputMismatchException | TagFormatException e){
             System.out.println(e.getMessage());
         }
         return false;
