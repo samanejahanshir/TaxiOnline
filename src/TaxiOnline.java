@@ -162,11 +162,14 @@ public class TaxiOnline {
                             int selectItem = scanner.nextInt();
                             switch (selectItem) {
                                 case 1:
-                                    travelDataBase.save(travel);
+                                    int id = travelDataBase.save(travel);
+                                    travel.setId(id);
+                                    int indexTravel = setIdFromListTravel(travel);
+                                    System.out.println("update travel list by index " + indexTravel);
                                     passenger.setAttendanceStatus(true);
                                     int index = passengers.indexOf(passenger);
                                     passengers.get(index).setAttendanceStatus(true);
-
+                                    showTravelAndManageIt(travel, driver, passenger);
                                     continue;
                                 case 2:
                                     passenger.setAttendanceStatus(false);
@@ -174,8 +177,8 @@ public class TaxiOnline {
                                     passengers.get(indexP).setAttendanceStatus(false);
                                     travels.remove(travel);
                                     continue;
-                                case  3:
-                                    return  3;
+                                case 3:
+                                    return 3;
                                 default:
                                     System.out.println("enter 1 or 2 or 3");
                             }
@@ -218,7 +221,6 @@ public class TaxiOnline {
         Passenger passenger = searchPassengerWithNCode(nationalCode);
         try {
             if (passenger != null && !passenger.isAttendanceStatus()) {
-
                 System.out.println(passenger.toString());
                 if (!passenger.isAttendanceStatus()) {
                     while (true) {
@@ -229,9 +231,10 @@ public class TaxiOnline {
                             case 1:
                                 travelRequest(passenger, PayType.BYCATCH.getName());
                                 System.out.println(travels.get(0));
-                                continue;
+                                break;
                             case 2:
                                 travelRequest(passenger, PayType.BYACCOUNT.getName());
+                                System.out.println(travels.get(0));
                                 continue;
                             case 3:
                                 if (incrementBalancePassenger(nationalCode)) {
@@ -453,18 +456,31 @@ public class TaxiOnline {
         }
         return null;
     }
+
     public Driver searchDriverWithId(int id) {
         for (Driver driver : drivers) {
-            if (driver.getId()==id) {
+            if (driver.getId() == id) {
                 return driver;
             }
         }
         return null;
     }
+
     public int searchDriverId(String nationalCode) {
         for (Driver driver : drivers) {
             if (driver.getNationalCode().equals(nationalCode)) {
                 return driver.getId();
+            }
+        }
+        return -1;
+    }
+
+    public int setIdFromListTravel(Travel travel) {
+
+        for (Travel travelTemp : travels) {
+            if (travelTemp.getIdDriver() == travel.getIdDriver() && travelTemp.getIdPassenger() == travel.getIdPassenger() && travelTemp.getDate().equals(travel.getDate())) {
+                travelTemp.setId(travel.getId());
+                return 1;
             }
         }
         return -1;
@@ -488,8 +504,19 @@ public class TaxiOnline {
                 MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
                 LocalTime time = LocalTime.now();
                 if (driver != null && myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
-                    travels.add(new Travel(driver.getId(), passenger.getId(), origin, destination, myDate.toString(), time + "", payType, StatusTravel.WAITING.getName()));
-                    return;
+                    Travel travel = new Travel(driver.getId(), passenger.getId(), origin, destination, myDate.toString(), time + "", payType, StatusTravel.WAITING.getName());
+                    if (travel.getPayType().equals(PayType.BYACCOUNT.getName())) {
+                        if (travel.getPrice() < passenger.getBalance()) {
+                            System.out.println("your balance is not enough !");
+
+                        } else {
+                            travels.add(travel);
+
+                        }
+                    } else {
+                        travels.add(travel);
+                    }
+
                 }
             }
         } catch (OriginFormatExcp | SQLException exp) {
@@ -521,16 +548,20 @@ public class TaxiOnline {
     }
 
     public Travel searchTravelForDriver(String nationalCode) {
-        int idDriver=searchDriverId(nationalCode);
+        int idDriver = searchDriverId(nationalCode);
         for (Travel travel : travels) {
-            if(travel.getIdDriver()==idDriver){
-                return  travel;
+            if (travel.getIdDriver() == idDriver) {
+                return travel;
             }
         }
         return null;
     }
 
-    public void showTravel(Travel travel) {
+    public void showTravelAndManageIt(Travel travel, Driver driver, Passenger passenger) {
+if(travel.getPayType().equals(PayType.BYCATCH)){
+    System.out.println("1.Confirm catch receipt \n2.Travel finished\n3.Exit");
+
+}
 
     }
 }

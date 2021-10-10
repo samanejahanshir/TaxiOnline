@@ -19,16 +19,31 @@ public class TravelDataBase extends DataBaseAccess {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("INSERT INTO travel (id_driver , id_passenger , origin , destination , price , date , hour , pay_type , travel_status) VALUES(%d,%d,'%s','%s',%2f,'%s','%s','%s','%s')"
                     , travel.getIdDriver(), travel.getIdPassenger(), travel.getOrigin(), travel.getDestination(), travel.getPrice(), travel.getDate(), travel.getHour(), travel.getPayType(), travel.getStatus());
-            int i=statement.executeUpdate(sqlQuery);
-            if(i!=0){
-                return i;
-            }else {
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return searchId(travel);
+            } else {
                 return -1;
             }
 
         } else {
             return -1;
         }
+    }
+
+    public int updateTravel(Travel travel) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE travel SET travel_status = '%s' WHERE id_travel=%d", travel.getStatus(), travel.getId());
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return i;
+            } else {
+                return -1;
+            }
+
+        }
+        return -1;
     }
 
     public List<String> getTravelInformation(int id_driver, int id_passenger) throws SQLException {
@@ -44,5 +59,16 @@ public class TravelDataBase extends DataBaseAccess {
             //TODO
         }
         return null;
+    }
+    public  int searchId(Travel travel) throws SQLException {
+        if(getConnection()!=null){
+            Statement statement=getConnection().createStatement();
+            String sqlQuery=String.format("SELECT id_travel FROM travel WHERE id_driver=%d and id_passenger=%d and date='%s'",travel.getIdDriver(),travel.getIdPassenger(),travel.getDate());
+            ResultSet resultSet=statement.executeQuery(sqlQuery);
+            if(resultSet.next()){
+                return resultSet.getInt(1);
+            }
+        }
+        return  -1;
     }
 }
