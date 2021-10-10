@@ -9,8 +9,9 @@ public class Travel {
     private String date;
     private  String hour;
     private  boolean payType;
+    private  boolean status;
 
-    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour,boolean payType) {
+    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour,boolean payType,boolean status) {
         this.idDriver = idDriver;
         this.idPassenger = idPassenger;
         this.origin = origin;
@@ -18,10 +19,19 @@ public class Travel {
         this.date = date;
         this.hour = hour;
         this.payType=payType;
+        this.status=status;
     }
 
     public boolean isPayType() {
         return payType;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public void setPayType(boolean payType) {
@@ -95,6 +105,7 @@ public class Travel {
                 ", date='" + date + '\'' +
                 ", hour='" + hour + '\'' +
                 ", payType=" + payType +
+                ", status=" + status +
                 '}';
     }
 }

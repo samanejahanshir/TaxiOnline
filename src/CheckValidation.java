@@ -1,4 +1,5 @@
 import exception.NumberException;
+import exception.OriginFormatExcp;
 import exception.StringException;
 import exception.TagFormatException;
 
@@ -44,6 +45,9 @@ public class CheckValidation {
         return true;
     }
 public  static  boolean checkOriginFormat(String origin){
+        if (!origin.contains(",")){
+            throw new OriginFormatExcp("format origin is not valid");
+        }
         String[] tempOrigin=origin.split(",");
        if( checkInt(tempOrigin[0]) && checkInt(tempOrigin[1])){
            return  true;
