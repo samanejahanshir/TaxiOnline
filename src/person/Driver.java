@@ -5,11 +5,21 @@ import java.util.Date;
 public class Driver extends Person{
     private String carTag;
     private String origin;
+    private boolean status;
 
-    public Driver(String firstName, String lastName, String nationalCode, boolean gender, String birthDate, String phoneNumber, double balance, String carTag,String origin) {
+    public Driver(String firstName, String lastName, String nationalCode, boolean gender, String birthDate, String phoneNumber, double balance, String carTag,String origin,boolean status) {
         super(firstName, lastName, nationalCode, gender, birthDate, phoneNumber, balance);
         this.carTag = carTag;
         this.origin=origin;
+        this.status=status;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getCarTag() {
@@ -46,6 +56,7 @@ public class Driver extends Person{
                 ", balance=" + getBalance() +
                 ", car_tag='" + carTag + '\'' +
                 ", origin='" + origin+ '\'' +
+                ", status='" + status+ '\'' +
 
                 '}';
     }

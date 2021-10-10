@@ -10,9 +10,9 @@ public class Travel {
     private String date;
     private String hour;
     private String payType;
-    private boolean status;
+    private String status;
 
-    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, String payType, boolean status) {
+    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, String payType, String status) {
         this.idDriver = idDriver;
         this.idPassenger = idPassenger;
         this.origin = origin;
@@ -32,15 +32,15 @@ public class Travel {
         this.price = price;
     }
 
-    public String isPayType() {
+    public String getPayType() {
         return payType;
     }
 
-    public boolean isStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
