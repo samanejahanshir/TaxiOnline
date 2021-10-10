@@ -41,7 +41,7 @@ public class DriverDataBase extends DataBaseAccess {
         }
     }
 
-    public List<Driver> showListDrivers() throws SQLException {
+    public List<Driver> getListDrivers() throws SQLException {
         List<Driver> drivers = new ArrayList<>();
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();

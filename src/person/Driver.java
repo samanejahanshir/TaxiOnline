@@ -14,7 +14,7 @@ public class Driver extends Person{
         this.status=status;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 

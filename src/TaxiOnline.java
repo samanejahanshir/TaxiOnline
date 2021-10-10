@@ -20,7 +20,7 @@ public class TaxiOnline {
     List<Travel> travels = new ArrayList<>();
 
     public TaxiOnline() throws SQLException, ClassNotFoundException {
-        drivers = driverDataBase.showListDrivers();
+        drivers = driverDataBase.getListDrivers();
         passengers = passengerDataBase.showListPassengers();
     }
 
@@ -34,7 +34,8 @@ public class TaxiOnline {
                     "\n4.Passenger signup or login" +
                     "\n5.show a list of drivers" +
                     "\n6.show a list of passengers" +
-                    "\n7.exit\n ------------------------------");
+                    "\n7.Show Ongoing Travels" +
+                    "\n8.exit\n ------------------------------");
             exit = selectMenuItem();
         }
     }
@@ -71,10 +72,13 @@ public class TaxiOnline {
                     showListOfPassengers();
                     return false;
                 case 7:
+
+
+                case 8:
                     return true;
 
                 default:
-                    System.out.println("enter number between 1 and 7 please !");
+                    System.out.println("enter number between 1 and 8 please !");
                     return false;
             }
 
@@ -137,31 +141,34 @@ public class TaxiOnline {
 
     }
 
-    public int driverSignUpOrLogIn() throws SQLException {
+    public void driverSignUpOrLogIn() throws SQLException {
+        boolean noExit=true;
         System.out.println("enter user name :");
         Scanner scanner = new Scanner(System.in);
         String nationalCode = scanner.next();
-        drivers = driverDataBase.showListDrivers();
+        drivers = driverDataBase.getListDrivers();
         Driver driver = searchDriverWithNCode(nationalCode);
         try {
-            if (driver != null && !driver.isStatus()) {
+            if (driver != null && !driver.getStatus()) {
                 Travel travel = searchTravelForDriver(nationalCode);
                 if (travel == null) {
                     System.out.println("you are waiting for start  travel ");
                     System.out.println("1.exit");
                     int selectItem = scanner.nextInt();
                     if (selectItem == 1) {
-                        return 1;
+                        noExit=false;
                     }
                 } else {
                     Passenger passenger = searchPassengerWithId(travel.getIdPassenger());
                     System.out.println(travel.toString() + " passenger name : " + passenger.getFirstName() + "  passenger family : " + passenger.getLastName());
-                    while (true) {
+                    while (noExit) {
                         System.out.println("1.confirmation travel \n2.cancel travel\n3.exit ");
                         try {
                             int selectItem = scanner.nextInt();
                             switch (selectItem) {
                                 case 1:
+                                    travel.setStatus(StatusTravel.ONTRAVEL.getName());
+                                    driver.setStatus(true);
                                     int id = travelDataBase.save(travel);
                                     travel.setId(id);
                                     int indexTravel = setIdFromListTravel(travel);
@@ -170,15 +177,16 @@ public class TaxiOnline {
                                     int index = passengers.indexOf(passenger);
                                     passengers.get(index).setAttendanceStatus(true);
                                     showTravelAndManageIt(travel, driver, passenger);
-                                    continue;
+                                    break;
                                 case 2:
                                     passenger.setAttendanceStatus(false);
                                     int indexP = passengers.indexOf(passenger);
                                     passengers.get(indexP).setAttendanceStatus(false);
                                     travels.remove(travel);
-                                    continue;
+                                    break;
                                 case 3:
-                                    return 3;
+                                    noExit=false;
+                                    break;
                                 default:
                                     System.out.println("enter 1 or 2 or 3");
                             }
@@ -188,7 +196,7 @@ public class TaxiOnline {
                     }
                 }
             } else {
-                while (true) {
+                while (noExit) {
                     System.out.println("1.Register\n2.exit");
                     int selectItem = scanner.nextInt();
                     switch (selectItem) {
@@ -200,7 +208,8 @@ public class TaxiOnline {
                             }
                             continue;
                         case 2:
-                            return 2;
+                            noExit=false;
+                            break;
                         default:
                             System.out.println("enter 1 or 2 ! ");
                     }
@@ -210,10 +219,11 @@ public class TaxiOnline {
             System.out.println(e.getMessage());
 
         }
-        return 0;
+
     }
 
-    public int passengerSignUpOrLogIn() throws SQLException {
+    public void passengerSignUpOrLogIn() throws SQLException {
+        boolean noExit=true;
         System.out.println("enter user name :");
         Scanner scanner = new Scanner(System.in);
         String nationalCode = scanner.next();
@@ -223,19 +233,19 @@ public class TaxiOnline {
             if (passenger != null && !passenger.isAttendanceStatus()) {
                 System.out.println(passenger.toString());
                 if (!passenger.isAttendanceStatus()) {
-                    while (true) {
-                        System.out.println("1.TravelRequest (pay by catch)\n2.TravelRequest ( pay by account balance)\n3.Increase account balance\n4.exit");
+
+                    while (noExit) {
+
+                            System.out.println("1.TravelRequest (pay by catch)\n2.TravelRequest ( pay by account balance)\n3.Increase account balance\n4.exit");
 
                         int selectItem = scanner.nextInt();
                         switch (selectItem) {
                             case 1:
                                 travelRequest(passenger, PayType.BYCATCH.getName());
-                                System.out.println(travels.get(0));
                                 break;
                             case 2:
                                 travelRequest(passenger, PayType.BYACCOUNT.getName());
-                                System.out.println(travels.get(0));
-                                continue;
+                                break;
                             case 3:
                                 if (incrementBalancePassenger(nationalCode)) {
                                     System.out.println("Increment balance was successfully");
@@ -245,7 +255,8 @@ public class TaxiOnline {
                                 }
                                 continue;
                             case 4:
-                                return 4;
+                                noExit=false;
+                                break;
                             default:
                                 System.out.println("enter between 1 - 4 ! ");
                         }
@@ -255,7 +266,7 @@ public class TaxiOnline {
                 }
 
             } else {
-                while (true) {
+                while (noExit) {
                     System.out.println("1.Register\n2.exit");
                     int selectItem = scanner.nextInt();
                     switch (selectItem) {
@@ -267,7 +278,8 @@ public class TaxiOnline {
                             }
                             continue;
                         case 2:
-                            return 2;
+                           noExit=false;
+                           break;
                         default:
                             System.out.println("enter 1 or 2 ! ");
                     }
@@ -276,23 +288,23 @@ public class TaxiOnline {
         } catch (NumberFormatException | SQLException e) {
             System.out.println("enter number please ! ");
         }
-        return 0;
+
 
 
     }
 
     public void showListOfDrivers() throws SQLException {
-        drivers = driverDataBase.showListDrivers();
-        for (int i = 0; i < drivers.size(); i++) {
-            System.out.println(drivers.get(i));
+        drivers = driverDataBase.getListDrivers();
+        for (Driver driver : drivers) {
+            System.out.println(driver);
 
         }
     }
 
     public void showListOfPassengers() throws SQLException {
         passengers = passengerDataBase.showListPassengers();
-        for (int i = 0; i < passengers.size(); i++) {
-            System.out.println(passengers.get(i));
+        for (Passenger passenger : passengers) {
+            System.out.println(passenger);
 
         }
     }
@@ -480,7 +492,7 @@ public class TaxiOnline {
         for (Travel travelTemp : travels) {
             if (travelTemp.getIdDriver() == travel.getIdDriver() && travelTemp.getIdPassenger() == travel.getIdPassenger() && travelTemp.getDate().equals(travel.getDate())) {
                 travelTemp.setId(travel.getId());
-                return 1;
+                return travelTemp.getId();
             }
         }
         return -1;
@@ -526,7 +538,7 @@ public class TaxiOnline {
 
 
     public Driver searchDriverForTravel(String origin) throws SQLException {
-        drivers = driverDataBase.showListDrivers();
+        drivers = driverDataBase.getListDrivers();
         String[] originElement = origin.split(",");
         Driver driverSelect = null;
         String[] destinationD1 = drivers.get(0).getOrigin().split(",");
@@ -550,7 +562,7 @@ public class TaxiOnline {
     public Travel searchTravelForDriver(String nationalCode) {
         int idDriver = searchDriverId(nationalCode);
         for (Travel travel : travels) {
-            if (travel.getIdDriver() == idDriver) {
+            if (travel.getIdDriver() == idDriver && travel.getStatus().equals(StatusTravel.WAITING.getName())) {
                 return travel;
             }
         }
@@ -558,10 +570,45 @@ public class TaxiOnline {
     }
 
     public void showTravelAndManageIt(Travel travel, Driver driver, Passenger passenger) {
-if(travel.getPayType().equals(PayType.BYCATCH)){
-    System.out.println("1.Confirm catch receipt \n2.Travel finished\n3.Exit");
+        boolean noExit=true;
+        Scanner scanner=new Scanner(System.in);
+        try {
+            if (travel.getPayType().equals(PayType.BYCATCH.getName())) {
+                while (noExit) {
+                    System.out.println("1.Confirm catch receipt \n2.Travel finished\n3.Exit");
+                    int selectItem = scanner.nextInt();
+                    switch (selectItem) {
+                        case 1:
+                            System.out.println("get catch from passenger");
+                            continue;
+                        case 2:
+                            travel.setStatus(StatusTravel.ENDTRAVEL.getName());
+                            travelDataBase.updateTravel(travel);
+                           break;
+                        case 3:
+                            noExit=false;
+                            break;
 
-}
+                    }
+
+                }
+            }else if (travel.getPayType().equals(PayType.BYACCOUNT.getName())) {
+                System.out.println("get not catch ... it is online payment \n1.Travel finished\n2.Exit");
+                int selectItem = scanner.nextInt();
+                switch (selectItem) {
+                    case 1:
+                        travel.setStatus(StatusTravel.ENDTRAVEL.getName());
+                        travelDataBase.updateTravel(travel);
+                        break;
+                    case 2:
+                        noExit=false;
+                        break;
+
+                }
+            }
+        }catch (NumberException | SQLException e){
+            System.out.println(e.getMessage());
+        }
 
     }
 }
