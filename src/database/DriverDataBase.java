@@ -1,5 +1,6 @@
 package database;
 
+import other_class.Travel;
 import other_class.Vehicle;
 import person.Driver;
 
@@ -24,6 +25,21 @@ public class DriverDataBase extends DataBaseAccess {
         } else {
             return 0;
         }
+    }
+
+    public int updateDriver(Driver driver) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE driver SET origin = '%s' WHERE national_code='%s'", driver.getOrigin(),driver.getNationalCode());
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return i;
+            } else {
+                return -1;
+            }
+
+        }
+        return -1;
     }
 
     public int searchDriver(String national_code) throws SQLException {

@@ -110,7 +110,7 @@ public class Travel {
         double distance = Math.pow(Integer.parseInt(destinationElement[0]) - Integer.parseInt(originElement[0]), 2)
                 + Math.pow(Integer.parseInt(destinationElement[1]) - Integer.parseInt(originElement[1]), 2);
 
-        this.price = distance*1000;
+        this.price = (distance/1000000)*1000;
     }
 
     @Override
