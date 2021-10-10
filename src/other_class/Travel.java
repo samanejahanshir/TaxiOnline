@@ -8,14 +8,24 @@ public class Travel {
     private String destination;
     private String date;
     private  String hour;
+    private  boolean payType;
 
-    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour) {
+    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour,boolean payType) {
         this.idDriver = idDriver;
         this.idPassenger = idPassenger;
         this.origin = origin;
         this.destination = destination;
         this.date = date;
         this.hour = hour;
+        this.payType=payType;
+    }
+
+    public boolean isPayType() {
+        return payType;
+    }
+
+    public void setPayType(boolean payType) {
+        this.payType = payType;
     }
 
     public int getId() {
@@ -84,6 +94,7 @@ public class Travel {
                 ", destination='" + destination + '\'' +
                 ", date='" + date + '\'' +
                 ", hour='" + hour + '\'' +
+                ", payType=" + payType +
                 '}';
     }
 }
