@@ -176,7 +176,7 @@ public class TaxiOnline {
                                     passenger.setAttendanceStatus(true);
                                     int index = passengers.indexOf(passenger);
                                     passengers.get(index).setAttendanceStatus(true);
-                                    showTravelAndManageIt(travel, driver, passenger);
+                                    showTravelAndManageIt(travel);
                                     break;
                                 case 2:
                                     passenger.setAttendanceStatus(false);
@@ -569,7 +569,7 @@ public class TaxiOnline {
         return null;
     }
 
-    public void showTravelAndManageIt(Travel travel, Driver driver, Passenger passenger) {
+    public void showTravelAndManageIt(Travel travel) {
         boolean noExit=true;
         Scanner scanner=new Scanner(System.in);
         try {
