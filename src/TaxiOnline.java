@@ -1,9 +1,7 @@
 import database.DriverDataBase;
 import database.PassengerDataBase;
-import exception.DateException;
-import exception.NumberException;
-import exception.StringException;
-import exception.TagFormatException;
+import exception.*;
+import other_class.Travel;
 import other_class.Vehicle;
 import person.Driver;
 import person.Passenger;
@@ -19,6 +17,7 @@ public class TaxiOnline {
     List<Passenger> passengers = new ArrayList<>();
     DriverDataBase driverDataBase = new DriverDataBase();
     PassengerDataBase passengerDataBase = new PassengerDataBase();
+    List<Travel> travels=new ArrayList<>();
 
     public TaxiOnline() throws SQLException, ClassNotFoundException {
         drivers = driverDataBase.showListDrivers();
@@ -200,7 +199,7 @@ public class TaxiOnline {
                     int selectItem = scanner.nextInt();
                     switch (selectItem) {
                         case 1:
-                            travelRequestPayByCatch();
+                            travelRequestPayByCatch(passenger);
                         case 2:
                             travelRequestPayByAccount();
 
@@ -317,7 +316,7 @@ public class TaxiOnline {
             if (myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
                 if (CheckValidation.checkString(firstName) && CheckValidation.checkString(lastName) && CheckValidation.checkInt(mobile) && CheckValidation.isValidateTagVehicle(carTag) && CheckValidation.checkOriginFormat(origin)) {
                     Vehicle vehicle = new Vehicle(carTag, color, model, type);
-                    Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag,origin);
+                    Driver driver = new Driver(firstName, lastName, nationalCode, man, myDate.toString(), Long.parseLong(mobile) + "", 0, carTag, origin);
                     if (driverDataBase.save(driver) != 0 && driverDataBase.saveVehicle(vehicle) != 0) {
                         return true;
                     } else {
@@ -325,7 +324,7 @@ public class TaxiOnline {
                     }
                 }
             }
-        } catch (NumberException | StringException | DateException | SQLException | InputMismatchException | TagFormatException e) {
+        } catch (NumberException | StringException | DateException | SQLException | InputMismatchException | TagFormatException  | OriginFormatExcp e) {
             System.out.println(e.getMessage());
         }
         return false;
@@ -402,11 +401,48 @@ public class TaxiOnline {
         return null;
     }
 
-    public void travelRequestPayByCatch() {
+    public void travelRequestPayByCatch(Passenger passenger) {
+        System.out.println("origin : like 1000,1000 : ");
+        Scanner scanner = new Scanner(System.in);
+        String origin = scanner.next();
+        System.out.println("destination: like 1000,1000 : ");
+        String destination = scanner.next();
+        try {
+            if (CheckValidation.checkOriginFormat(origin) && CheckValidation.checkOriginFormat(destination)) {
+                Driver driver = searchDriverForTravel(origin);
+                if(driver!=null){
 
+                    travels.add(new Travel(driver.getId(),passenger.getId(),origin,destination,));
+                }
+            }
+        }catch (OriginFormatExcp | SQLException exp){
+            System.out.println(exp.getMessage());
+        }
     }
 
     public void travelRequestPayByAccount() {
+
+    }
+
+    public Driver searchDriverForTravel(String origin) throws SQLException {
+        drivers = driverDataBase.showListDrivers();
+        String[] originElement = origin.split(",");
+        Driver driverSelect=null;
+        String[] destinationD1 = drivers.get(0).getOrigin().split(",");
+        double distance = Math.pow(Integer.parseInt(destinationD1[0]) - Integer.parseInt(originElement[0]), 2)
+                + Math.pow(Integer.parseInt(destinationD1[1]) - Integer.parseInt(originElement[1]), 2);
+        for (Driver driver : drivers) {
+            String[] destinationElement = driver.getOrigin().split(",");
+            double tempDistance = Math.pow(Integer.parseInt(destinationElement[0]) - Integer.parseInt(originElement[0]), 2)
+                    + Math.pow(Integer.parseInt(destinationElement[1]) - Integer.parseInt(originElement[1]), 2);
+            if(distance>=tempDistance){
+                distance=tempDistance;
+                driverSelect=driver;
+            }
+
+        }
+
+        return  driverSelect;
 
     }
 }

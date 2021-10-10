@@ -6,20 +6,30 @@ public class Travel {
     private int idPassenger;
     private String origin;
     private String destination;
+    private int price;
     private String date;
-    private  String hour;
-    private  boolean payType;
-    private  boolean status;
+    private String hour;
+    private boolean payType;
+    private boolean status;
 
-    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour,boolean payType,boolean status) {
+    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, boolean payType, boolean status) {
         this.idDriver = idDriver;
         this.idPassenger = idPassenger;
         this.origin = origin;
         this.destination = destination;
+        calculatePrice();
         this.date = date;
         this.hour = hour;
-        this.payType=payType;
-        this.status=status;
+        this.payType = payType;
+        this.status = status;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public boolean isPayType() {
@@ -94,6 +104,15 @@ public class Travel {
         this.hour = hour;
     }
 
+    public void calculatePrice() {
+        String[] originElement = this.origin.split(",");
+        String[] destinationElement = this.destination.split(",");
+        double distance = Math.pow(Integer.parseInt(destinationElement[0]) - Integer.parseInt(originElement[0]), 2)
+                + Math.pow(Integer.parseInt(destinationElement[1]) - Integer.parseInt(originElement[1]), 2);
+
+        this.price = Integer.parseInt((Math.sqrt(distance) * 1000) + "");
+    }
+
     @Override
     public String toString() {
         return "Travel{" +
@@ -102,6 +121,7 @@ public class Travel {
                 ", idPassenger=" + idPassenger +
                 ", origin='" + origin + '\'' +
                 ", destination='" + destination + '\'' +
+                ", price=" + price +
                 ", date='" + date + '\'' +
                 ", hour='" + hour + '\'' +
                 ", payType=" + payType +
