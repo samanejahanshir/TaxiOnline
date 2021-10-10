@@ -1,5 +1,7 @@
 package person;
 
+import java.util.Objects;
+
 public class Person {
     private  int id;
     private String firstName;
@@ -95,5 +97,18 @@ public class Person {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", balance=" + balance +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return id == person.id && gender == person.gender && Double.compare(person.balance, balance) == 0 && firstName.equals(person.firstName) && lastName.equals(person.lastName) && nationalCode.equals(person.nationalCode) && Objects.equals(birthDate, person.birthDate) && Objects.equals(phoneNumber, person.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, nationalCode, gender, birthDate, phoneNumber, balance);
     }
 }

@@ -184,30 +184,39 @@ public class TaxiOnline {
         return 0;
     }
 
-    public int passengerSignUpOrLogIn() {
+    public int passengerSignUpOrLogIn() throws SQLException {
         System.out.println("enter user name :");
         Scanner scanner = new Scanner(System.in);
         String nationalCode = scanner.next();
+        passengers=passengerDataBase.showListPassengers();
+        Passenger passenger=searchPassenger(nationalCode);
         try {
-            if (passengerDataBase.searchPassenger(nationalCode) != -1) {
-                while (true) {
-                    System.out.println("1.Increment balance\n2.exit");
-                    int selectItem = scanner.nextInt();
-                    switch (selectItem) {
-                        case 1:
-                            if (incrementBalancePassenger(nationalCode)) {
-                                System.out.println("Increment balance was successfully");
-                            } else {
-                                System.out.println("Increment balance was failed !");
+            if (passenger!=null && passenger.isAttendanceStatus()==false) {
 
-                            }
+                    System.out.println(passenger.toString());
+                    while (passenger.isAttendanceStatus()==false) {
+                        System.out.println("1.TravelRequest (pay by catch)\n2.TravelRequest ( pay by account balance)\3.Increase account balance");
 
-                        case 2:
-                            return 2;
-                        default:
-                            System.out.println("enter 1 or 2 ! ");
+                        int selectItem = scanner.nextInt();
+                        switch (selectItem) {
+                            case  1:
+
+                            case 2:
+
+
+                            case 3:
+                                if (incrementBalancePassenger(nationalCode)) {
+                                    System.out.println("Increment balance was successfully");
+                                } else {
+                                    System.out.println("Increment balance was failed !");
+
+                                }
+                            case 4:
+                                return 4;
+                            default:
+                                System.out.println("enter 1 or 2 ! ");
+                        }
                     }
-                }
 
             } else {
                 while (true) {
@@ -381,5 +390,13 @@ public class TaxiOnline {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+    public Passenger searchPassenger(String nationalCode){
+        for (Passenger passenger : passengers) {
+            if(passenger.getNationalCode().equals(nationalCode)){
+                return passenger;
+            }
+        }
+        return  null;
     }
 }
