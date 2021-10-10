@@ -21,6 +21,7 @@ public class PassengerDataBase extends DataBaseAccess{
             ResultSet resultSet=statement.executeQuery(sqlQuery);
             while (resultSet.next()){
                 Passenger passenger=new Passenger(resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getBoolean(5),resultSet.getString(6),resultSet.getString(9),resultSet.getDouble(8),resultSet.getBoolean(7));
+               passenger.setId(resultSet.getInt(1));
                 passengers.add(passenger);
             }
             return passengers;

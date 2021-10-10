@@ -50,6 +50,7 @@ public class DriverDataBase extends DataBaseAccess {
             while (resultSet.next()) {
                 Driver driver = new Driver(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4)
                         , resultSet.getBoolean(6), resultSet.getString(7), resultSet.getString(5), resultSet.getDouble(9), resultSet.getString(8),resultSet.getString(10));
+                driver.setId(resultSet.getInt(1));
                 drivers.add(driver);
             }
             return drivers;

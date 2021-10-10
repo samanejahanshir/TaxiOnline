@@ -5,12 +5,13 @@ import other_class.Travel;
 import other_class.Vehicle;
 import person.Driver;
 import person.Passenger;
+import sun.util.resources.cldr.CalendarData;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 
 public class TaxiOnline {
     List<Driver> drivers = new ArrayList<>();
@@ -194,14 +195,15 @@ public class TaxiOnline {
 
                 System.out.println(passenger.toString());
                 while (passenger.isAttendanceStatus() == false) {
-                    System.out.println("1.TravelRequest (pay by catch)\n2.TravelRequest ( pay by account balance)\3.Increase account balance\n4.exit");
+                    System.out.println("1.TravelRequest (pay by catch)\n2.TravelRequest ( pay by account balance)\n3.Increase account balance\n4.exit");
 
                     int selectItem = scanner.nextInt();
                     switch (selectItem) {
                         case 1:
-                            travelRequestPayByCatch(passenger);
+                            travelRequest(passenger,PayType.BYCATCH.getName());
+                            System.out.println(travels.get(0));
                         case 2:
-                            travelRequestPayByAccount();
+                            travelRequest(passenger,PayType.BYACCOUNT.getName());
 
                         case 3:
                             if (incrementBalancePassenger(nationalCode)) {
@@ -401,7 +403,7 @@ public class TaxiOnline {
         return null;
     }
 
-    public void travelRequestPayByCatch(Passenger passenger) {
+    public void travelRequest(Passenger passenger,String payType) {
         System.out.println("origin : like 1000,1000 : ");
         Scanner scanner = new Scanner(System.in);
         String origin = scanner.next();
@@ -410,9 +412,16 @@ public class TaxiOnline {
         try {
             if (CheckValidation.checkOriginFormat(origin) && CheckValidation.checkOriginFormat(destination)) {
                 Driver driver = searchDriverForTravel(origin);
-                if(driver!=null){
-
-                    travels.add(new Travel(driver.getId(),passenger.getId(),origin,destination,));
+                System.out.println("year :");
+                String year=scanner.next();
+                System.out.println("month :");
+                String month=scanner.next();
+                System.out.println("day :");
+                String day=scanner.next();
+                MyDate myDate=new MyDate(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day));
+                LocalTime time=LocalTime.now();
+                if(driver!=null && myDate.isValidDate(myDate.getYear(),myDate.getMonth(),myDate.getDay())){
+                    travels.add(new Travel(driver.getId(),passenger.getId(),origin,destination,myDate.toString(),time+"",payType,false));
                 }
             }
         }catch (OriginFormatExcp | SQLException exp){
@@ -420,9 +429,6 @@ public class TaxiOnline {
         }
     }
 
-    public void travelRequestPayByAccount() {
-
-    }
 
     public Driver searchDriverForTravel(String origin) throws SQLException {
         drivers = driverDataBase.showListDrivers();

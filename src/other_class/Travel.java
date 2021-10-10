@@ -6,13 +6,13 @@ public class Travel {
     private int idPassenger;
     private String origin;
     private String destination;
-    private int price;
+    private double price;
     private String date;
     private String hour;
-    private boolean payType;
+    private String payType;
     private boolean status;
 
-    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, boolean payType, boolean status) {
+    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, String payType, boolean status) {
         this.idDriver = idDriver;
         this.idPassenger = idPassenger;
         this.origin = origin;
@@ -24,15 +24,15 @@ public class Travel {
         this.status = status;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
-    public boolean isPayType() {
+    public String isPayType() {
         return payType;
     }
 
@@ -44,7 +44,7 @@ public class Travel {
         this.status = status;
     }
 
-    public void setPayType(boolean payType) {
+    public void setPayType(String payType) {
         this.payType = payType;
     }
 
@@ -110,7 +110,7 @@ public class Travel {
         double distance = Math.pow(Integer.parseInt(destinationElement[0]) - Integer.parseInt(originElement[0]), 2)
                 + Math.pow(Integer.parseInt(destinationElement[1]) - Integer.parseInt(originElement[1]), 2);
 
-        this.price = Integer.parseInt((Math.sqrt(distance) * 1000) + "");
+        this.price = distance*1000;
     }
 
     @Override
