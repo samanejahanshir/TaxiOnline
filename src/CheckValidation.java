@@ -43,5 +43,13 @@ public class CheckValidation {
         }
         return true;
     }
-
+public  static  boolean checkOriginFormat(String origin){
+        String[] tempOrigin=origin.split(",");
+       if( checkInt(tempOrigin[0]) && checkInt(tempOrigin[1])){
+           return  true;
+       }
+        else {
+            return  false;
+       }
+}
     }

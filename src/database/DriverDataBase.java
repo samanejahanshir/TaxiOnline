@@ -17,8 +17,8 @@ public class DriverDataBase extends DataBaseAccess {
     public int save(Driver driver) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            String sqlQuery = String.format("INSERT INTO driver (first_name , last_name , national_code , mobile_phone , gender , birth_date , car_tag , balance) VALUES ('%s','%s','%s','%s',%b,'%s','%s',%f)",
-                    driver.getFirstName(), driver.getLastName(), driver.getNationalCode(), driver.getPhoneNumber(), driver.isGender(), driver.getBirthDate(), driver.getCarTag(), driver.getBalance());
+            String sqlQuery = String.format("INSERT INTO driver (first_name , last_name , national_code , mobile_phone , gender , birth_date , car_tag , balance , origin) VALUES ('%s','%s','%s','%s',%b,'%s','%s',%f,'%s')",
+                    driver.getFirstName(), driver.getLastName(), driver.getNationalCode(), driver.getPhoneNumber(), driver.isGender(), driver.getBirthDate(), driver.getCarTag(), driver.getBalance(),driver.getOrigin());
             int i = statement.executeUpdate(sqlQuery);
             return i;
         } else {
@@ -49,7 +49,7 @@ public class DriverDataBase extends DataBaseAccess {
             ResultSet resultSet = statement.executeQuery(sqlQuery);
             while (resultSet.next()) {
                 Driver driver = new Driver(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4)
-                        , resultSet.getBoolean(6), resultSet.getString(7), resultSet.getString(5), resultSet.getDouble(9), resultSet.getString(8));
+                        , resultSet.getBoolean(6), resultSet.getString(7), resultSet.getString(5), resultSet.getDouble(9), resultSet.getString(8),resultSet.getString(10));
                 drivers.add(driver);
             }
             return drivers;
