@@ -1,7 +1,9 @@
 package database;
 
+import other_class.Travel;
 import other_class.Vehicle;
 import person.Driver;
+import person.Passenger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,13 +19,43 @@ public class DriverDataBase extends DataBaseAccess {
     public int save(Driver driver) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            String sqlQuery = String.format("INSERT INTO driver (first_name , last_name , national_code , mobile_phone , gender , birth_date , car_tag , balance) VALUES ('%s','%s','%s','%s',%b,'%s','%s',%f)",
-                    driver.getFirstName(), driver.getLastName(), driver.getNationalCode(), driver.getPhoneNumber(), driver.isGender(), driver.getBirthDate(), driver.getCarTag(), driver.getBalance());
+            String sqlQuery = String.format("INSERT INTO driver (first_name , last_name , national_code , mobile_phone , gender , birth_date , car_tag , balance , origin) VALUES ('%s','%s','%s','%s',%b,'%s','%s',%f,'%s')",
+                    driver.getFirstName(), driver.getLastName(), driver.getNationalCode(), driver.getPhoneNumber(), driver.isGender(), driver.getBirthDate(), driver.getCarTag(), driver.getBalance(), driver.getOrigin());
             int i = statement.executeUpdate(sqlQuery);
             return i;
         } else {
             return 0;
         }
+    }
+    public int updateDriverStatus(Driver driver) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE driver SET status = %b WHERE id_driver=%d", driver.getStatus(), driver.getId());
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return i;
+            } else {
+                return -1;
+            }
+
+        }
+        return -1;
+
+    }
+
+    public int updateDriver(Driver driver) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE driver SET origin = '%s' WHERE national_code='%s'", driver.getOrigin(), driver.getNationalCode());
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return i;
+            } else {
+                return -1;
+            }
+
+        }
+        return -1;
     }
 
     public int searchDriver(String national_code) throws SQLException {
@@ -41,7 +73,7 @@ public class DriverDataBase extends DataBaseAccess {
         }
     }
 
-    public List<Driver> showListDrivers() throws SQLException {
+    public List<Driver> getListDrivers() throws SQLException {
         List<Driver> drivers = new ArrayList<>();
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
@@ -49,7 +81,8 @@ public class DriverDataBase extends DataBaseAccess {
             ResultSet resultSet = statement.executeQuery(sqlQuery);
             while (resultSet.next()) {
                 Driver driver = new Driver(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4)
-                        , resultSet.getBoolean(6), resultSet.getString(7), resultSet.getString(5), resultSet.getDouble(9), resultSet.getString(8));
+                        , resultSet.getBoolean(6), resultSet.getString(7), resultSet.getString(5), resultSet.getDouble(9), resultSet.getString(8), resultSet.getString(10), resultSet.getBoolean(11));
+                driver.setId(resultSet.getInt(1));
                 drivers.add(driver);
             }
             return drivers;
@@ -71,6 +104,7 @@ public class DriverDataBase extends DataBaseAccess {
             return -1;
         }
     }
+
     public int saveVehicle(Vehicle vehicle) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
@@ -82,4 +116,35 @@ public class DriverDataBase extends DataBaseAccess {
             return 0;
         }
     }
+
+    public Vehicle getVehicle(String carTag) throws SQLException {
+
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("SELECT * FROM vehicle WHERE vehicle_tag='%s'", carTag);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            if (resultSet.next()) {
+                Vehicle vehicle = new Vehicle(carTag, resultSet.getString(5), resultSet.getString(4), resultSet.getString(3));
+                vehicle.setId(resultSet.getInt(1));
+                return vehicle;
+            }
+        }
+        return null;
+    }
+
+    public boolean changeBalance(String national_code, double balance) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE driver SET balance=%2f WHERE national_code='%s'", balance, national_code);
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
 }

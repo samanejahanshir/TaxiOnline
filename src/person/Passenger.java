@@ -1,6 +1,7 @@
 package person;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Passenger extends  Person{
     private  boolean attendanceStatus;
@@ -37,4 +38,6 @@ public class Passenger extends  Person{
                 ", attendanceStatus='" + attendanceStatus + '\'' +
                 '}';
     }
+
+
 }
