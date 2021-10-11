@@ -21,7 +21,8 @@ public class TaxiOnline {
 
     public TaxiOnline() throws SQLException, ClassNotFoundException {
         drivers = driverDataBase.getListDrivers();
-        passengers = passengerDataBase.showListPassengers();
+        passengers = passengerDataBase.getListPassengers();
+        travels=travelDataBase.getTravels();
     }
 
     public void showMenu() {
@@ -149,7 +150,7 @@ public class TaxiOnline {
         drivers = driverDataBase.getListDrivers();
         Driver driver = searchDriverWithNCode(nationalCode);
         try {
-            if (driver != null && !driver.getStatus()) {
+            if (driver != null) {
                 travels = travelDataBase.getTravels();
                 Travel travel = searchTravelForDriver(nationalCode);
                 if (travel == null) {
@@ -162,54 +163,65 @@ public class TaxiOnline {
                 } else {
                     Passenger passenger = searchPassengerWithId(travel.getIdPassenger());
                     System.out.println(travel.toString() + " passenger name : " + passenger.getFirstName() + "  passenger family : " + passenger.getLastName());
-                    while (noExit) {
-                        System.out.println("1.confirmation travel \n2.cancel travel\n3.exit ");
-                        try {
-                            int selectItem = scanner.nextInt();
-                            switch (selectItem) {
-                                case 1:
-                                    travel.setStatus(StatusTravel.ONTRAVEL.getName());
-                                    driver.setStatus(true);
-                                    if(!travelDataBase.findTravel(travel)) {
-                                        int id = travelDataBase.save(travel);
-                                        travel.setId(id);
-                                    }else {
-                                        travelDataBase.updateTravel(travel);
-                                    }
-                                    int indexTravel = setIdFromListTravel(travel);
-                                    System.out.println("update travel list by index " + indexTravel);
-                                    passenger.setAttendanceStatus(true);
-                                    int index = passengers.indexOf(passenger);
-                                    passengers.get(index).setAttendanceStatus(true);
-                                    showTravelAndManageIt(travel);
-                                    driver.setOrigin(travel.getDestination());
-                                    driver.setStatus(false);
-                                    if (driverDataBase.updateDriver(driver) != -1) {
-                                        System.out.println("update origin driver was successfully");
-                                    } else {
-                                        System.out.println("update origin driver was failed");
+                  if(!driver.getStatus()) {
+                      while (noExit) {
+                          System.out.println("1.confirmation travel \n2.cancel travel\n3.exit ");
+                          try {
+                              int selectItem = scanner.nextInt();
+                              switch (selectItem) {
+                                  case 1:
+                                      travel.setStatus(StatusTravel.ONTRAVEL.getName());
+                                      driver.setStatus(true);
+                                      driverDataBase.updateDriverStatus(driver);
+                                      if (!travelDataBase.findTravel(travel)) {
+                                          int id = travelDataBase.save(travel);
+                                          travel.setId(id);
+                                      } else {
+                                          travelDataBase.updateTravel(travel);
+                                      }
+                                      int indexTravel = setIdFromListTravel(travel);
+                                      System.out.println("update travel list by index " + indexTravel);
+                                      passenger.setAttendanceStatus(true);
+                                      int index = passengers.indexOf(passenger);
+                                      passengers.get(index).setAttendanceStatus(true);
+                                      passengerDataBase.updatePassengerStatus(passenger);
+                                      noExit = false;
+                                      break;
+                                  case 2:
+                                      passenger.setAttendanceStatus(false);
+                                      int indexP = passengers.indexOf(passenger);
+                                      passengers.get(indexP).setAttendanceStatus(false);
+                                      travels.remove(travel);
+                                      travelDataBase.deleteTravel(travel);
+                                      noExit = false;
+                                      break;
+                                  case 3:
+                                      noExit = false;
+                                      break;
+                                  default:
+                                      System.out.println("enter 1 or 2 or 3");
+                              }
+                          } catch (NumberException e) {
+                              System.out.println(e.getMessage());
+                          }
+                      }
+                  }else {
+                              int end = showTravelAndManageIt(travel, driver, passenger);
+                              driver.setOrigin(travel.getDestination());
+                              driver.setStatus(false);
+                              if (end == 2) {
+                                  if (driverDataBase.updateDriver(driver) != -1) {
+                                      System.out.println("update origin driver was successfully");
+                                  } else {
+                                      System.out.println("update origin driver was failed");
 
-                                    }
-                                    noExit=false;
-                                    break;
-                                case 2:
-                                    passenger.setAttendanceStatus(false);
-                                    int indexP = passengers.indexOf(passenger);
-                                    passengers.get(indexP).setAttendanceStatus(false);
-                                    travels.remove(travel);
-                                    travelDataBase.deleteTravel(travel);
-                                    noExit=false;
-                                    break;
-                                case 3:
-                                    noExit = false;
-                                    break;
-                                default:
-                                    System.out.println("enter 1 or 2 or 3");
-                            }
-                        } catch (NumberException e) {
-                            System.out.println(e.getMessage());
-                        }
-                    }
+                                  }
+                                  passenger.setAttendanceStatus(false);
+                                  passengerDataBase.updatePassengerStatus(passenger);
+                                  driverDataBase.updateDriverStatus(driver);
+                              }
+                  }
+
                 }
             } else {
                 while (noExit) {
@@ -243,10 +255,10 @@ public class TaxiOnline {
         System.out.println("enter user name :");
         Scanner scanner = new Scanner(System.in);
         String nationalCode = scanner.next();
-        passengers = passengerDataBase.showListPassengers();
+        passengers = passengerDataBase.getListPassengers();
         Passenger passenger = searchPassengerWithNCode(nationalCode);
         try {
-            if (passenger != null && !passenger.isAttendanceStatus()) {
+            if (passenger != null) {
                 System.out.println(passenger.toString());
                 if (!passenger.isAttendanceStatus()) {
 
@@ -279,6 +291,17 @@ public class TaxiOnline {
                     }
                 } else if (passenger.isAttendanceStatus()) {
                     System.out.println("you are traveling ... ");
+                    Travel travel=searchTravelForPassenger(passenger.getId());
+                    if(travel!=null){
+                        System.out.println("******************** ");
+                        System.out.println("your request accept by : ");
+                        Driver driver=searchDriverWithId(travel.getIdDriver());
+                        System.out.println(driver.getFirstName()+" "+driver.getLastName());
+                        System.out.println(driverDataBase.getVehicle(driver.getCarTag()));
+                        System.out.println("******************** ");
+
+                    }
+
                 }
 
             } else {
@@ -317,7 +340,7 @@ public class TaxiOnline {
     }
 
     public void showListOfPassengers() throws SQLException {
-        passengers = passengerDataBase.showListPassengers();
+        passengers = passengerDataBase.getListPassengers();
         for (Passenger passenger : passengers) {
             System.out.println(passenger);
 
@@ -443,7 +466,7 @@ public class TaxiOnline {
         System.out.println("enter amount of increment balance :");
         try {
             double amount = scanner.nextDouble();
-            if (passengerDataBase.IncrementBalance(nationalCode, amount + passengerDataBase.showBalance(nationalCode))) {
+            if (passengerDataBase.changeBalance(nationalCode, amount + passengerDataBase.showBalance(nationalCode))) {
                 return true;
             } else {
                 return false;
@@ -578,14 +601,24 @@ public class TaxiOnline {
     public Travel searchTravelForDriver(String nationalCode) {
         int idDriver = searchDriverId(nationalCode);
         for (Travel travel : travels) {
-            if (travel.getIdDriver() == idDriver && (travel.getStatus().equals(StatusTravel.WAITING.getName()) ||  travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
+            if (travel.getIdDriver() == idDriver && (travel.getStatus().equals(StatusTravel.WAITING.getName()) || travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
                 return travel;
             }
         }
         return null;
     }
 
-    public void showTravelAndManageIt(Travel travel) {
+    public Travel searchTravelForPassenger(int id) {
+
+        for (Travel travel : travels) {
+            if (travel.getIdPassenger() == id && (travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
+                return travel;
+            }
+        }
+        return null;
+    }
+
+    public int showTravelAndManageIt(Travel travel, Driver driver, Passenger passenger) {
         boolean noExit = true;
         Scanner scanner = new Scanner(System.in);
         try {
@@ -600,8 +633,8 @@ public class TaxiOnline {
                         case 2:
                             travel.setStatus(StatusTravel.ENDTRAVEL.getName());
                             travelDataBase.updateTravel(travel);
-                            noExit=false;
-                            break;
+                            noExit = false;
+                            return 2;
                         case 3:
                             noExit = false;
                             break;
@@ -610,18 +643,20 @@ public class TaxiOnline {
 
                 }
             } else if (travel.getPayType().equals(PayType.BYACCOUNT.getName())) {
-                System.out.println("get not catch ... it is online payment \n1.Travel finished\n2.Exit");
+                System.out.println("get not catch ... it is online payment \n2.Travel finished\n3.Exit");
                 int selectItem = scanner.nextInt();
                 switch (selectItem) {
-                    case 1:
+                    case 2:
                         travel.setStatus(StatusTravel.ENDTRAVEL.getName());
                         if (travelDataBase.updateTravel(travel) != -1) {
                             System.out.println("update travel table was successfully");
-                            ;
+                            passengerDataBase.changeBalance(passenger.getNationalCode(), passenger.getBalance() - travel.getPrice());
+                            driverDataBase.changeBalance(driver.getNationalCode(), driver.getBalance() + travel.getPrice());
+
                         }
-                        noExit=false;
-                        break;
-                    case 2:
+                        noExit = false;
+                        return  2;
+                    case 3:
                         noExit = false;
                         break;
 
@@ -630,7 +665,7 @@ public class TaxiOnline {
         } catch (NumberException | SQLException e) {
             System.out.println(e.getMessage());
         }
-
+    return  -1;
     }
 
     public void showOngoingTravels() throws SQLException {
