@@ -13,7 +13,7 @@ public class PassengerDataBase extends DataBaseAccess{
     public PassengerDataBase() throws ClassNotFoundException, SQLException {
         super();
     }
-    public List<Passenger> showListPassengers() throws SQLException {
+    public List<Passenger> getListPassengers() throws SQLException {
         List<Passenger> passengers=new ArrayList<>();
         if (getConnection()!=null){
             Statement statement=getConnection().createStatement();
@@ -27,6 +27,21 @@ public class PassengerDataBase extends DataBaseAccess{
             return passengers;
         }
         return  null;
+    }
+    public int updatePassengerStatus(Passenger passenger) throws SQLException {
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            String sqlQuery = String.format("UPDATE passenger SET attendance_status = %b WHERE idpassenger=%d", passenger.isAttendanceStatus(), passenger.getId());
+            int i = statement.executeUpdate(sqlQuery);
+            if (i != 0) {
+                return i;
+            } else {
+                return -1;
+            }
+
+        }
+        return -1;
+
     }
     public int save(Passenger passenger) throws SQLException {
         if(getConnection()!=null){
@@ -56,7 +71,7 @@ public class PassengerDataBase extends DataBaseAccess{
             return  -1;
         }
     }
-    public boolean IncrementBalance(String national_code, double balance) throws SQLException {
+    public boolean changeBalance(String national_code, double balance) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("UPDATE passenger SET balance=%2f WHERE national_code='%s'", balance, national_code);

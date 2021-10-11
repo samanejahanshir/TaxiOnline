@@ -1,6 +1,7 @@
 package other_class;
 
 public class Vehicle {
+    private  int id;
     private String vehicleTag;
     private String color;
     private  String model;
@@ -11,6 +12,14 @@ public class Vehicle {
         this.color = color;
         this.model = model;
         Type = type;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getVehicleTag() {
@@ -43,5 +52,15 @@ public class Vehicle {
 
     public void setType(String type) {
         Type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "vehicleTag='" + vehicleTag + '\'' +
+                ", color='" + color + '\'' +
+                ", model='" + model + '\'' +
+                ", Type='" + Type + '\'' +
+                '}';
     }
 }
