@@ -87,7 +87,7 @@ public class TravelDataBase extends DataBaseAccess {
                         , resultSet.getString(17), resultSet.getString(15), resultSet.getDouble(19), resultSet.getString(18), resultSet.getString(20), resultSet.getBoolean(21));
                 Travel travel = new Travel(resultSet.getInt(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5)
                         , resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10));
-                travelInfo.add(driver+"\n"+passenger+"\n"+travel);
+                travelInfo.add("Driver : "+ driver+"\n"+"passenger : "+passenger+"\n"+travel);
             }
             return travelInfo;
         } else {

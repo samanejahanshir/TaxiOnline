@@ -88,7 +88,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", nationalCode='" + nationalCode + '\'' +
