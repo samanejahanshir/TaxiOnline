@@ -670,6 +670,9 @@ public class TaxiOnline {
 
     public void showOngoingTravels() throws SQLException {
         List<String> listInfoTravel = travelDataBase.getTravelInformation();
+        if(listInfoTravel.size()==0){
+            System.out.println("there aren't any travel  ");
+        }
         for (String information : listInfoTravel) {
             System.out.println(information);
 
