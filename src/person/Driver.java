@@ -1,24 +1,46 @@
 package person;
 
-import java.util.Date;
+import other_class.Vehicle;
+
+import javax.persistence.*;
+
+@Entity
 
 public class Driver extends Person{
     private String carTag;
     private String origin;
-    private boolean status;
+    private int status;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Vehicle vehicle;
 
-    public Driver(String firstName, String lastName, String nationalCode, boolean gender, String birthDate, String phoneNumber, double balance, String carTag,String origin,boolean status) {
+    public Driver(String firstName, String lastName, String nationalCode, boolean gender, String birthDate, String phoneNumber, double balance, String carTag,String origin,int status) {
         super(firstName, lastName, nationalCode, gender, birthDate, phoneNumber, balance);
         this.carTag = carTag;
         this.origin=origin;
         this.status=status;
     }
 
-    public boolean getStatus() {
+    public Driver() {
+
+    }
+
+    public int isStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
         this.status = status;
     }
 
