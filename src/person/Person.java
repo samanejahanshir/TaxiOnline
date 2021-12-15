@@ -1,8 +1,12 @@
 package person;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Person {
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private  int id;
     private String firstName;
     private  String lastName;
@@ -20,6 +24,10 @@ public class Person {
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
         this.balance = balance;
+    }
+
+    public Person() {
+
     }
 
     public int getId() {
