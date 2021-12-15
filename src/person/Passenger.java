@@ -1,14 +1,21 @@
 package person;
 
-import java.util.Date;
-import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
 public class Passenger extends  Person{
+
     private  boolean attendanceStatus;
 
     public Passenger(String firstName, String lastName, String nationalCode, boolean gender, String birthDate, String phoneNumber, double balance, boolean attendanceStatus) {
         super(firstName, lastName, nationalCode, gender, birthDate, phoneNumber, balance);
         this.attendanceStatus = attendanceStatus;
+    }
+
+    public Passenger() {
+
     }
 
     public boolean isAttendanceStatus() {
