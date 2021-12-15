@@ -1,17 +1,30 @@
 package other_class;
 
+import person.Driver;
+
+import javax.persistence.*;
+
+@Entity
 public class Vehicle {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  int id;
     private String vehicleTag;
     private String color;
     private  String model;
     private  String Type;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Driver driver;
 
     public Vehicle(String carTag, String color, String model, String type) {
         this.vehicleTag = carTag;
         this.color = color;
         this.model = model;
         Type = type;
+    }
+
+    public Vehicle() {
+
     }
 
     public int getId() {
