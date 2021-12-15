@@ -1,8 +1,18 @@
 package other_class;
 
+import person.Driver;
+import person.Passenger;
+
+import javax.persistence.*;
+
+@Entity
 public class Travel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Transient
     private int idDriver;
+    @Transient
     private int idPassenger;
     private String origin;
     private String destination;
@@ -11,6 +21,10 @@ public class Travel {
     private String hour;
     private String payType;
     private String status;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Driver driver;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Passenger passenger;
 
     public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, String payType, String status) {
         this.idDriver = idDriver;
@@ -22,6 +36,30 @@ public class Travel {
         this.hour = hour;
         this.payType = payType;
         this.status = status;
+    }
+
+    public Travel() {
+
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public Passenger getPassenger() {
+        return passenger;
+    }
+
+    public void setPassenger(Passenger passenger) {
+        this.passenger = passenger;
     }
 
     public double getPrice() {
