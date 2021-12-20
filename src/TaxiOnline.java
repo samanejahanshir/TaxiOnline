@@ -189,7 +189,7 @@ public class TaxiOnline {
                                         int index = passengers.indexOf(passenger);
                                         passengers.get(index).setAttendanceStatus(true);
                                         passengerDataBase.updatePassengerStatus(passenger);
-                                        noExit = false;
+                                        noExit = true;
                                         break;
                                     case 2:
                                         passenger.setAttendanceStatus(false);

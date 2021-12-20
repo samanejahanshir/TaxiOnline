@@ -9,6 +9,7 @@ import person.Passenger;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -126,15 +127,16 @@ public class TravelDataBase extends DataBaseAccess {
         } else {
             return  null;
         }
-        /*Session session = DataBaseAccess.getSessionFactory().openSession();
+       /* Session session = DataBaseAccess.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Travel> criteria = builder.createQuery(Travel.class);
-        criteria.from(Travel.class);
+        Root<Travel> root =criteria.from(Travel.class);
+        criteria.select(root).where(builder.gt(root.get("status"),))
         List<Travel> travelList = session.createQuery(criteria).getResultList();
         transaction.commit();
         session.close();
-        return travelInfo;*/
+        return travelList;*/
     }
 
     public int searchId(Travel travel) throws SQLException {

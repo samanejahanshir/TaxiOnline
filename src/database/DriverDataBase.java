@@ -76,7 +76,9 @@ public class DriverDataBase extends DataBaseAccess {
         return -1;*/
         Session session = DataBaseAccess.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        session.update(driver);
+        Driver driver1=searchDriver(driver.getNationalCode());
+        driver1.setStatus(1);
+        session.update(driver1);
         transaction.commit();
         session.close();
         return 1;

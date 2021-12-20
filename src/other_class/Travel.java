@@ -21,9 +21,9 @@ public class Travel {
     private String hour;
     private String payType;
     private String status;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Driver driver;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Passenger passenger;
 
     public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, String payType, String status) {
