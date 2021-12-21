@@ -10,10 +10,10 @@ public class Travel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Transient
+   /* @Transient
     private int idDriver;
     @Transient
-    private int idPassenger;
+    private int idPassenger;*/
     private String origin;
     private String destination;
     private double price;
@@ -27,8 +27,8 @@ public class Travel {
     private Passenger passenger;
 
     public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, String payType, String status) {
-        this.idDriver = idDriver;
-        this.idPassenger = idPassenger;
+      /*  this.idDriver = idDriver;
+        this.idPassenger = idPassenger;*/
         this.origin = origin;
         this.destination = destination;
         calculatePrice();
@@ -94,7 +94,7 @@ public class Travel {
         this.id = id;
     }
 
-    public int getIdDriver() {
+  /*  public int getIdDriver() {
         return idDriver;
     }
 
@@ -108,7 +108,7 @@ public class Travel {
 
     public void setIdPassenger(int idPassenger) {
         this.idPassenger = idPassenger;
-    }
+    }*/
 
     public String getOrigin() {
         return origin;
@@ -155,8 +155,6 @@ public class Travel {
     public String toString() {
         return "Travel{" +
                 "id=" + id +
-                ", idDriver=" + idDriver +
-                ", idPassenger=" + idPassenger +
                 ", origin='" + origin + '\'' +
                 ", destination='" + destination + '\'' +
                 ", price=" + price +

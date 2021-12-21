@@ -18,7 +18,7 @@ public class DataBaseAccess {
     }
 public  static SessionFactory getSessionFactory(){
         if(sessionFactory==null){
-            sessionFactory=new Configuration().configure("hibernate/hibernate.cfg.xml").buildSessionFactory();
+            sessionFactory=new Configuration().configure("config/hibernate.cfg.xml").buildSessionFactory();
         }
         return  sessionFactory;
 }
