@@ -2,8 +2,10 @@ package models;
 
 import models.Driver;
 import models.Passenger;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Travel {
@@ -17,8 +19,12 @@ public class Travel {
     private String origin;
     private String destination;
     private double price;
-    private String date;
-    private String hour;
+    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
+    private Date date;
+    @Temporal(TemporalType.TIME)
+    @CreationTimestamp
+    private Date hour;
     private String payType;
     private String status;
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -26,13 +32,12 @@ public class Travel {
     @OneToOne(cascade = CascadeType.PERSIST)
     private Passenger passenger;
 
-    public Travel(int idDriver, int idPassenger, String origin, String destination, String date, String hour, String payType, String status) {
+    public Travel(String origin, String destination,String payType, String status) {
       /*  this.idDriver = idDriver;
         this.idPassenger = idPassenger;*/
         this.origin = origin;
         this.destination = destination;
         calculatePrice();
-        this.date = date;
         this.hour = hour;
         this.payType = payType;
         this.status = status;
@@ -126,19 +131,19 @@ public class Travel {
         this.destination = destination;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public String getHour() {
+    public Date getHour() {
         return hour;
     }
 
-    public void setHour(String hour) {
+    public void setHour(Date hour) {
         this.hour = hour;
     }
 

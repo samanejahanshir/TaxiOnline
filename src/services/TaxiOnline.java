@@ -167,7 +167,7 @@ public class TaxiOnline {
                         noExit = false;
                     }
                 } else {
-                    Passenger passenger = searchPassengerWithId(travel.getIdPassenger());
+                    Passenger passenger = searchPassengerWithId(travel.getPassenger().getId());
                     System.out.println(travel.toString() + " passenger name : " + passenger.getFirstName() + "  passenger family : " + passenger.getLastName());
                     if (driver.getStatus()!=1) {
                         while (noExit) {
@@ -302,7 +302,7 @@ public class TaxiOnline {
                     if (travel != null) {
                         System.out.println("******************** ");
                         System.out.println("your request accept by : ");
-                        Driver driver = searchDriverWithId(travel.getIdDriver());
+                        Driver driver = searchDriverWithId(travel.getDriver().getId());
                         System.out.println(driver.getFirstName() + " " + driver.getLastName());
                         System.out.println(driverDataBase.getVehicle(driver.getCarTag()));
                         System.out.println("******************** ");
@@ -542,7 +542,7 @@ public class TaxiOnline {
     public int setIdFromListTravel(Travel travel) throws SQLException, ClassNotFoundException {
         travels = travelDataBase.getTravels();
         for (Travel travelTemp : travels) {
-            if (travelTemp.getIdDriver() == travel.getIdDriver() && travelTemp.getIdPassenger() == travel.getIdPassenger() && travelTemp.getDate().equals(travel.getDate())) {
+            if (travelTemp.getDriver().getId() == travel.getDriver().getId() && travelTemp.getPassenger().getId() == travel.getPassenger().getId() && travelTemp.getDate().equals(travel.getDate())) {
                 travelTemp.setId(travel.getId());
                 return travelTemp.getId();
             }
@@ -559,16 +559,9 @@ public class TaxiOnline {
         try {
             if (CheckValidation.checkOriginFormat(origin) && CheckValidation.checkOriginFormat(destination)) {
                 Driver driver = searchDriverForTravel(origin);
-                System.out.println("year :");
-                String year = scanner.next();
-                System.out.println("month :");
-                String month = scanner.next();
-                System.out.println("day :");
-                String day = scanner.next();
-                MyDate myDate = new MyDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
                 LocalTime time = LocalTime.now();
-                if (driver != null && myDate.isValidDate(myDate.getYear(), myDate.getMonth(), myDate.getDay())) {
-                    Travel travel = new Travel(driver.getId(), passenger.getId(), origin, destination, myDate.toString(), time + "", payType, StatusTravel.WAITING.getName());
+                if (driver != null) {
+                    Travel travel = new Travel(origin, destination, payType, StatusTravel.WAITING.getName());
                     travel.setPassenger(passenger);
                     travel.setDriver(driver);
                     if (travel.getPayType().equals(PayType.BYACCOUNT.getName())) {
@@ -616,7 +609,7 @@ public class TaxiOnline {
     public Travel searchTravelForDriver(String nationalCode) throws SQLException {
         int idDriver = searchDriverId(nationalCode);
         for (Travel travel : travels) {
-            if (travel.getIdDriver() == idDriver && (travel.getStatus().equals(StatusTravel.WAITING.getName()) || travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
+            if (travel.getDriver().getId() == idDriver && (travel.getStatus().equals(StatusTravel.WAITING.getName()) || travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
                 return travel;
             }
         }
@@ -626,7 +619,7 @@ public class TaxiOnline {
     public Travel searchTravelForPassenger(int id) throws SQLException, ClassNotFoundException {
         travels = travelDataBase.getTravels();
         for (Travel travel : travels) {
-            if (travel.getIdPassenger() == id && (travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
+            if (travel.getPassenger().getId() == id && (travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
                 return travel;
             }
         }

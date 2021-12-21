@@ -1,7 +1,10 @@
 package dao;
 
+import models.enums.StatusTravel;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import models.Travel;
 import models.Driver;
@@ -109,7 +112,7 @@ public class TravelDataBase extends DataBaseAccess {
 
     public List<String> getTravelInformation() throws SQLException {
         List<String> travelInfo = new ArrayList<>();
-        if (getConnection() != null) {
+       /* if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("select * from travel inner join driver inner join passenger on travel.id_driver=driver.id_driver and travel.id_passenger=passenger.idpassenger and travel.travel_status='OnTravel'");
             ResultSet resultSet = statement.executeQuery(sqlQuery);
@@ -125,20 +128,21 @@ public class TravelDataBase extends DataBaseAccess {
             return travelInfo;
         } else {
             return  null;
-        }
-       /* Session session = DataBaseAccess.getSessionFactory().openSession();
+        }*/
+     /*   Session session = DataBaseAccess.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Travel> criteria = builder.createQuery(Travel.class);
-        Root<Travel> root =criteria.from(Travel.class);
-        criteria.select(root).where(builder.gt(root.get("status"),))
-        List<Travel> travelList = session.createQuery(criteria).getResultList();
+        Criteria criteria = session.createCriteria(Travel.class,"t");
+        criteria.createAlias("t.passenger","p");
+        criteria.createAlias("t.driver","d");
+        criteria.add(Restrictions.eq("t.status", StatusTravel.ONTRAVEL.getName()));
+
         transaction.commit();
         session.close();
         return travelList;*/
+        return null;
     }
 
-    public int searchId(Travel travel) throws SQLException {
+   /* public int searchId(Travel travel) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("SELECT id_travel FROM travel WHERE id_driver=%d and id_passenger=%d and date='%s'", travel.getIdDriver(), travel.getIdPassenger(), travel.getDate());
@@ -148,7 +152,7 @@ public class TravelDataBase extends DataBaseAccess {
             }
         }
         return -1;
-    }
+    }*/
     public List<Travel> getTravels() throws SQLException, ClassNotFoundException {
         List<Travel> travels ;
        /* if(getConnection()!=null) {
@@ -183,8 +187,8 @@ public class TravelDataBase extends DataBaseAccess {
             travels.add(travel);
         }*/
         for (Travel travel : travels) {
-            travel.setIdDriver(travel.getDriver().getId());
-            travel.setIdPassenger(travel.getPassenger().getId());
+            travel.setDriver(travel.getDriver());
+            travel.setPassenger(travel.getPassenger());
         }
         return travels;
     }
