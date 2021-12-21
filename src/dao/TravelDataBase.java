@@ -1,14 +1,17 @@
 package dao;
 
+import models.TravelDto;
 import models.enums.StatusTravel;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import models.Travel;
 import models.Driver;
 import models.Passenger;
+import org.hibernate.transform.Transformers;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -110,7 +113,7 @@ public class TravelDataBase extends DataBaseAccess {
 
     }
 
-    public List<String> getTravelInformation() throws SQLException {
+    public List<TravelDto> getTravelInformation() throws SQLException {
         List<String> travelInfo = new ArrayList<>();
        /* if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
@@ -129,17 +132,27 @@ public class TravelDataBase extends DataBaseAccess {
         } else {
             return  null;
         }*/
-     /*   Session session = DataBaseAccess.getSessionFactory().openSession();
+        Session session = DataBaseAccess.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         Criteria criteria = session.createCriteria(Travel.class,"t");
-        criteria.createAlias("t.passenger","p");
         criteria.createAlias("t.driver","d");
-        criteria.add(Restrictions.eq("t.status", StatusTravel.ONTRAVEL.getName()));
-
+        criteria.createAlias("t.passenger","p");
+       /* criteria.createAlias("t.passenger","p");
+        criteria.createAlias("t.driver","d");
+        criteria.add(Restrictions.eq("t.status", StatusTravel.ONTRAVEL.getName()));*/
+        criteria.add(Restrictions.eq("t.status",StatusTravel.ONTRAVEL));
+        criteria.setProjection(Projections.projectionList()
+                .add(Projections.property("t.origin"),"origin")
+                .add(Projections.property("t.destination"),"destination")
+                .add(Projections.property("d.firstName"),"driver")
+                .add(Projections.property("p.firstName"),"passenger")
+                .add(Projections.property("t.payType"),"payType"));
+        criteria.setResultTransformer(Transformers.aliasToBean(TravelDto.class));
+List<TravelDto> list=criteria.list();
         transaction.commit();
         session.close();
-        return travelList;*/
-        return null;
+        return list;
+
     }
 
    /* public int searchId(Travel travel) throws SQLException {

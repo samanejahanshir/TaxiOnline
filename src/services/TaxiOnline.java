@@ -8,7 +8,6 @@ import models.*;
 import models.enums.PayType;
 import models.enums.StatusTravel;
 import models.enums.VehicleType;
-import services.CheckValidation;
 
 import java.sql.SQLException;
 import java.time.LocalTime;
@@ -169,7 +168,7 @@ public class TaxiOnline {
                 } else {
                     Passenger passenger = searchPassengerWithId(travel.getPassenger().getId());
                     System.out.println(travel.toString() + " passenger name : " + passenger.getFirstName() + "  passenger family : " + passenger.getLastName());
-                    if (driver.getStatus()!=1) {
+                    if (driver.getStatus() != 1) {
                         while (noExit) {
                             System.out.println("1.confirmation travel \n2.cancel travel\n3.exit ");
                             try {
@@ -685,13 +684,13 @@ public class TaxiOnline {
     }
 
     public void showOngoingTravels() throws SQLException {
-        List<String> listInfoTravel = travelDataBase.getTravelInformation();
+        List<TravelDto> listInfoTravel = travelDataBase.getTravelInformation();
         if (listInfoTravel.size() == 0) {
             System.out.println("there aren't any travel  ");
-        }
-        for (String information : listInfoTravel) {
-            System.out.println(information);
-
+        }else {
+            for (TravelDto travelDto : listInfoTravel) {
+                System.out.println(travelDto);
+            }
         }
 
     }
