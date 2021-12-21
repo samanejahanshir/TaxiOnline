@@ -153,7 +153,7 @@ public class DriverDataBase extends DataBaseAccess {
     }
 
     public double showBalance(String nationalCode) throws SQLException {
-        if (getConnection() != null) {
+      /*  if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             String sqlQuery = String.format("SELECT balance from driver WHERE national_code='%s'", nationalCode);
             ResultSet resultSet = statement.executeQuery(sqlQuery);
@@ -164,7 +164,15 @@ public class DriverDataBase extends DataBaseAccess {
             }
         } else {
             return -1;
-        }
+        }*/
+        Session session=DataBaseAccess.getSessionFactory().openSession();
+        Transaction transaction=session.beginTransaction();
+        Query<Driver> query = session.createQuery("from Driver where nationalCode=:nationalCode", Driver.class);
+       query.setParameter("nationalCode",nationalCode);
+        Driver driver = query.getSingleResult();
+        transaction.commit();
+        session.close();
+        return driver.getBalance();
     }
 
     public int saveVehicle(Vehicle vehicle) throws SQLException {
@@ -232,9 +240,18 @@ public class DriverDataBase extends DataBaseAccess {
         } else {
             return false;
         }*/
-        Driver driver=searchDriver(national_code);
+        Session session=DataBaseAccess.getSessionFactory().openSession();
+        Transaction transaction=session.beginTransaction();
+        Query query=session.createQuery("update Driver set balance=:balance where nationalCode=:nationalCode");
+        query.setParameter("balance",balance);
+        query.setParameter("nationalCode",national_code);
+        int result=query.executeUpdate();
+       /* Driver driver=searchDriver(national_code);
         driver.setBalance(balance);
-        updateDriver(driver);
+        updateDriver(driver);*/
+        if(result<=0){
+            return false;
+        }
         return  true;
     }
 
