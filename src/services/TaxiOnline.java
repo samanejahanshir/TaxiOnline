@@ -176,7 +176,7 @@ public class TaxiOnline {
                                 int selectItem = scanner.nextInt();
                                 switch (selectItem) {
                                     case 1:
-                                        travel.setStatus(StatusTravel.ONTRAVEL.getName());
+                                        travel.setStatus(StatusTravel.ONTRAVEL);
                                         driver.setStatus(1);
                                         driverDataBase.updateDriver(driver);
                                         if (!travelDataBase.findTravel(travel)) {
@@ -192,7 +192,7 @@ public class TaxiOnline {
                                         int index = passengers.indexOf(passenger);
                                         passengers.get(index).setAttendanceStatus(true);
                                         passengerDataBase.updatePassengerStatus(passenger);
-                                        noExit = true;
+                                        noExit = false;
                                         break;
                                     case 2:
                                         passenger.setAttendanceStatus(false);
@@ -276,10 +276,10 @@ public class TaxiOnline {
                         int selectItem = scanner.nextInt();
                         switch (selectItem) {
                             case 1:
-                                travelRequest(passenger, PayType.BYCATCH.getName());
+                                travelRequest(passenger, PayType.BYCATCH);
                                 break;
                             case 2:
-                                travelRequest(passenger, PayType.BYACCOUNT.getName());
+                                travelRequest(passenger, PayType.BYACCOUNT);
                                 break;
                             case 3:
                                 if (incrementBalancePassenger(nationalCode)) {
@@ -550,7 +550,7 @@ public class TaxiOnline {
         return -1;
     }
 
-    public void travelRequest(Passenger passenger, String payType) {
+    public void travelRequest(Passenger passenger, PayType payType) {
         System.out.println("origin : like 1000,1000 : ");
         Scanner scanner = new Scanner(System.in);
         String origin = scanner.next();
@@ -561,10 +561,10 @@ public class TaxiOnline {
                 Driver driver = searchDriverForTravel(origin);
                 LocalTime time = LocalTime.now();
                 if (driver != null) {
-                    Travel travel = new Travel(origin, destination, payType, StatusTravel.WAITING.getName());
+                    Travel travel = new Travel(origin, destination, payType, StatusTravel.WAITING);
                     travel.setPassenger(passenger);
                     travel.setDriver(driver);
-                    if (travel.getPayType().equals(PayType.BYACCOUNT.getName())) {
+                    if (travel.getPayType().equals(PayType.BYACCOUNT)) {
                         if (travel.getPrice() > passenger.getBalance()) {
                             System.out.println("your balance is not enough !");
 
@@ -607,9 +607,9 @@ public class TaxiOnline {
     }
 
     public Travel searchTravelForDriver(String nationalCode) throws SQLException {
-        int idDriver = searchDriverId(nationalCode);
+        //int idDriver = searchDriverId(nationalCode);
         for (Travel travel : travels) {
-            if (travel.getDriver().getId() == idDriver && (travel.getStatus().equals(StatusTravel.WAITING.getName()) || travel.getStatus().equals(StatusTravel.ONTRAVEL.getName()))) {
+            if (travel.getDriver().getNationalCode().equalsIgnoreCase(nationalCode) && (travel.getStatus().equals(StatusTravel.WAITING) || travel.getStatus().equals(StatusTravel.ONTRAVEL))) {
                 return travel;
             }
         }
@@ -630,7 +630,7 @@ public class TaxiOnline {
         boolean noExit = true;
         Scanner scanner = new Scanner(System.in);
         try {
-            if (travel.getPayType().equals(PayType.BYCATCH.getName())) {
+            if (travel.getPayType().equals(PayType.BYCATCH)) {
                 while (noExit) {
                     System.out.println("1.Confirm catch receipt \n2.Travel finished\n3.Exit");
                     int selectItem = scanner.nextInt();
@@ -639,8 +639,12 @@ public class TaxiOnline {
                             System.out.println("get catch from passenger");
                             continue;
                         case 2:
-                            travel.setStatus(StatusTravel.ENDTRAVEL.getName());
+                            travel.setStatus(StatusTravel.ENDTRAVEL);
                             travelDataBase.updateTravel(travel);
+                            driver.setStatus(0);
+                            driverDataBase.updateDriver(driver);
+                            passenger.setAttendanceStatus(false);
+                            passengerDataBase.updatePassengerStatus(passenger);
                             noExit = false;
                             return 2;
                         case 3:
@@ -650,14 +654,18 @@ public class TaxiOnline {
                     }
 
                 }
-            } else if (travel.getPayType().equals(PayType.BYACCOUNT.getName())) {
+            } else if (travel.getPayType().equals(PayType.BYACCOUNT)) {
                 System.out.println("get not catch ... it is online payment \n2.Travel finished\n3.Exit");
                 int selectItem = scanner.nextInt();
                 switch (selectItem) {
                     case 2:
-                        travel.setStatus(StatusTravel.ENDTRAVEL.getName());
+                        travel.setStatus(StatusTravel.ENDTRAVEL);
                         if (travelDataBase.updateTravel(travel) != -1) {
                             System.out.println("update travel table was successfully");
+                            driver.setStatus(0);
+                            driverDataBase.updateDriver(driver);
+                            passenger.setAttendanceStatus(false);
+                            passengerDataBase.updatePassengerStatus(passenger);
                             passengerDataBase.changeBalance(passenger.getNationalCode(), passenger.getBalance() - travel.getPrice());
                             driverDataBase.changeBalance(driver.getNationalCode(), driver.getBalance() + travel.getPrice());
 

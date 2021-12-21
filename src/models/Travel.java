@@ -1,7 +1,7 @@
 package models;
 
-import models.Driver;
-import models.Passenger;
+import models.enums.PayType;
+import models.enums.StatusTravel;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,10 +12,10 @@ public class Travel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-   /* @Transient
-    private int idDriver;
-    @Transient
-    private int idPassenger;*/
+    /* @Transient
+     private int idDriver;
+     @Transient
+     private int idPassenger;*/
     private String origin;
     private String destination;
     private double price;
@@ -25,14 +25,16 @@ public class Travel {
     @Temporal(TemporalType.TIME)
     @CreationTimestamp
     private Date hour;
-    private String payType;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PayType payType;
+    @Enumerated(EnumType.STRING)
+    private StatusTravel status;
     @OneToOne(cascade = CascadeType.PERSIST)
     private Driver driver;
     @OneToOne(cascade = CascadeType.PERSIST)
     private Passenger passenger;
 
-    public Travel(String origin, String destination,String payType, String status) {
+    public Travel(String origin, String destination, PayType payType, StatusTravel status) {
       /*  this.idDriver = idDriver;
         this.idPassenger = idPassenger;*/
         this.origin = origin;
@@ -75,19 +77,19 @@ public class Travel {
         this.price = price;
     }
 
-    public String getPayType() {
+    public PayType getPayType() {
         return payType;
     }
 
-    public String getStatus() {
+    public StatusTravel getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusTravel status) {
         this.status = status;
     }
 
-    public void setPayType(String payType) {
+    public void setPayType(PayType payType) {
         this.payType = payType;
     }
 
@@ -153,7 +155,7 @@ public class Travel {
         double distance = Math.pow(Integer.parseInt(destinationElement[0]) - Integer.parseInt(originElement[0]), 2)
                 + Math.pow(Integer.parseInt(destinationElement[1]) - Integer.parseInt(originElement[1]), 2);
 
-        this.price = (distance/1000000)*1000;
+        this.price = (distance / 1000000) * 1000;
     }
 
     @Override
