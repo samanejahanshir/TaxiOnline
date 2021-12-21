@@ -246,6 +246,8 @@ public class DriverDataBase extends DataBaseAccess {
         query.setParameter("balance",balance);
         query.setParameter("nationalCode",national_code);
         int result=query.executeUpdate();
+        transaction.commit();
+        session.close();
        /* Driver driver=searchDriver(national_code);
         driver.setBalance(balance);
         updateDriver(driver);*/

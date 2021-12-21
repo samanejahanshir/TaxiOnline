@@ -1,12 +1,10 @@
 package dao;
 
+import models.Passenger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import models.Passenger;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -30,11 +28,15 @@ public class PassengerDataBase extends DataBaseAccess {
         return  null;*/
         Session session = DataBaseAccess.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+        /*CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Passenger> criteria = builder.createQuery(Passenger.class);
         criteria.from(Passenger.class);
-        passengers = session.createQuery(criteria).getResultList();
-        return passengers;
+        passengers = session.createQuery(criteria).getResultList();*/
+        Query<Passenger> query = session.createQuery("from Passenger", Passenger.class);
+        List<Passenger> resultList = query.getResultList();
+        transaction.commit();
+        session.close();
+        return resultList;
     }
     public int updatePassengerStatus(Passenger passenger) throws SQLException {
       /*  if (getConnection() != null) {
@@ -123,14 +125,26 @@ public class PassengerDataBase extends DataBaseAccess {
         } else {
             return false;
         }*/
-        Passenger passenger=searchPassenger(national_code);
+       /* Passenger passenger=searchPassenger(national_code);
         passenger.setBalance(balance);
         Session session = DataBaseAccess.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         session.update(passenger);
         transaction.commit();
         session.close();
-        return true;
+        return true;*/
+        Session session=DataBaseAccess.getSessionFactory().openSession();
+        Transaction transaction=session.beginTransaction();
+        Query query=session.createQuery("update Passenger set balance=:balance where nationalCode=:nationalCode");
+        query.setParameter("balance",balance);
+        query.setParameter("nationalCode",national_code);
+        int result=query.executeUpdate();
+        transaction.commit();
+        session.close();
+        if(result<=0){
+            return false;
+        }
+        return  true;
 
     }
     public Passenger searchPassengerById(int id) throws SQLException {
